@@ -1,0 +1,269 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-10 18:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "User Account"
+msgstr "用户账户"
+
+msgid "Personal"
+msgstr "个人"
+
+msgid "Platform"
+msgstr "平台"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Mainland China (+86)"
+msgstr "中国 (+86)"
+
+msgid "Hong Kong, China (+852)"
+msgstr "中国香港 (+852)"
+
+msgid "Macao, China (+853)"
+msgstr "中国澳门 (+853)"
+
+msgid "Taiwan, China (+886)"
+msgstr "中国台湾 (+886)"
+
+msgid "Sign In Params Not Exist"
+msgstr "登录参数缺失"
+
+msgid "User Not Exist"
+msgstr "用户不存在"
+
+msgid "Wrong Username or Password"
+msgstr "用户名或密码错误"
+
+msgid "Token Not Exist"
+msgstr "Token 不存在"
+
+msgid "Wrong Token"
+msgstr "Token 错误"
+
+msgid "State Invalid"
+msgstr "状态异常"
+
+msgid "WeChat Login Failed"
+msgstr "微信登录失败"
+
+msgid "Origin Password Invalid"
+msgstr "原密码不正确"
+
+msgid "Phone Verify Code Invalid"
+msgstr "电话验证码错误"
+
+msgid "Username Cannot be Empty"
+msgstr "用户名不能为空"
+
+msgid "username"
+msgstr "用户名"
+
+msgid "already in use"
+msgstr "已被占用"
+
+msgid "Nick Name"
+msgstr "用户昵称"
+
+msgid "User Type"
+msgstr "用户类型"
+
+msgid "Date Joined"
+msgstr "注册时间"
+
+msgid "Phone Number"
+msgstr "联系电话"
+
+msgid "Email Address"
+msgstr "邮件地址"
+
+msgid "Wechat Open ID"
+msgstr "微信 Open ID"
+
+msgid "Wechat Union ID"
+msgstr "微信 Union ID"
+
+msgid "Avatar"
+msgstr "头像"
+
+msgid "Is Staff"
+msgstr "是否管理员"
+
+msgid "User"
+msgstr "用户"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Is OAuth"
+msgstr "是否 OAuth"
+
+msgid "WeChat Code"
+msgstr "微信 Code"
+
+msgid "Tencent Captcha"
+msgstr "腾讯云验证码"
+
+msgid "Phone Area"
+msgstr "电话归属国家"
+
+msgid "Phone Verify Code"
+msgstr "电话验证码"
+
+msgid "Phone Number Already Exists"
+msgstr "电话已被使用"
+
+msgid "State"
+msgstr "状态"
+
+msgid "Application"
+msgstr "应用"
+
+msgid "App Name"
+msgstr "应用名称"
+
+msgid "App Code"
+msgstr "应用ID"
+
+msgid "App Secret (Encoded)"
+msgstr "应用密码(加密)"
+
+msgid "App Url"
+msgstr "应用访问地址"
+
+msgid "App Logo"
+msgstr "应用图标"
+
+msgid "App Desc"
+msgstr "应用描述"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Manager"
+msgstr "管理员"
+
+msgid "Application Manager"
+msgstr "应用管理员"
+
+msgid "Home Module"
+msgstr "首页"
+
+msgid "Language Code Invalid"
+msgstr "语言ID非法"
+
+msgid "Search IP Failed"
+msgstr "检索 IP 失败"
+
+msgid "Config Key"
+msgstr "配置键"
+
+msgid "Config Value"
+msgstr "配置值"
+
+msgid "Is Public"
+msgstr "是否公开"
+
+msgid "Meta Config"
+msgstr "基础配置"
+
+msgid "Meta Configs"
+msgstr "基础配置"
+
+msgid "Language Code"
+msgstr "语言ID"
+
+msgid "Notice"
+msgstr "通知"
+
+msgid "msg"
+msgstr "短信"
+
+msgid "mail"
+msgstr "邮件"
+
+msgid "robot"
+msgstr "机器人"
+
+msgid "Receivers"
+msgstr "接收人"
+
+msgid "Content"
+msgstr "内容"
+
+msgid "Extra Params"
+msgstr "参数"
+
+msgid "Result"
+msgstr "结果"
+
+msgid "Send At"
+msgstr "发送时间"
+
+msgid "Notice Log"
+msgstr "通知记录"
+
+msgid "Webhook"
+msgstr "回调地址"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Robot"
+msgstr "机器人"
+
+msgid "Username List"
+msgstr "用户名列表"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Template ID"
+msgstr "模板ID"
+
+msgid "Params"
+msgstr "参数"
+
+msgid "Robot ID"
+msgstr "机器人ID"
+
+#, python-format
+msgid "Notice Type not Exists => %s"
+msgstr "通知类型不存在 => %s"
+
+msgid "App Auth Params is not Json"
+msgstr "应用鉴权参数不是JSON"
+
+msgid "App Auth Params Not Exist"
+msgstr "应用鉴权参数不存在"
+
+msgid "App Not Exist"
+msgstr "应用不存在"
+
+msgid "App Code or Secret Incorrect"
+msgstr "应用ID或者密钥不正确"
+
+msgid "Auth Token Invalid"
+msgstr "认证 Token 非法"
+
+msgid "App Auth Failed"
+msgstr "应用鉴权失败"

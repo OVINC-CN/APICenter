@@ -1,0 +1,15 @@
+{
+  "template": "https://github.com/OVINC-CN/DevTemplateDjango.git",
+  "commit": "6957e612ab3e625ffd602eeed7ddfa462ac2f296",
+  "checkout": "main",
+  "context": {
+    "cookiecutter": {
+      "project_name": "union-api",
+      "_copy_without_render": [
+        ".github"
+      ],
+      "_template": "https://github.com/OVINC-CN/DevTemplateDjango.git"
+    }
+  },
+  "directory": null
+}
