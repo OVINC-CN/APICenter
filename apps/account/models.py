@@ -16,6 +16,7 @@ from ovinc_client.core.models import SoftDeletedManager, SoftDeletedModel
 from ovinc_client.core.utils import num_code, uniq_id
 
 from apps.account.constants import (
+    LOGIN_CODE_KEY,
     PHONE_VERIFY_CODE_KEY,
     PHONE_VERIFY_CODE_LENGTH,
     PHONE_VERIFY_CODE_TIMEOUT,
@@ -95,7 +96,8 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
         """
 
         code = uniq_id()
-        cache.set(code, self.username, timeout=settings.OAUTH_CODE_TIMEOUT)
+        cache_key = LOGIN_CODE_KEY.format(code=code)
+        cache.set(cache_key, self.username, timeout=settings.OAUTH_CODE_TIMEOUT)
         return code
 
     @classmethod
@@ -104,8 +106,9 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
         Check OAuth User Code
         """
 
-        username = cache.get(code)
-        cache.delete(code)
+        cache_key = LOGIN_CODE_KEY.format(code=code)
+        username = cache.get(cache_key)
+        cache.delete(cache_key)
         try:
             return True, cls.objects.get(username=username)
         except cls.DoesNotExist:  # pylint: disable=E1101

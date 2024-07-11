@@ -15,7 +15,12 @@ from ovinc_client.core.viewsets import MainViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.account.constants import PhoneNumberAreas, WeChatAuthType
+from apps.account.constants import (
+    WECHAT_LOGIN_STATE_KEY,
+    WECHAT_USER_INFO_KEY,
+    PhoneNumberAreas,
+    WeChatAuthType,
+)
 from apps.account.exceptions import (
     StateInvalid,
     UserNotExist,
@@ -189,7 +194,8 @@ class UserSignViewSet(MainViewSet):
         """
 
         state = uniq_id()
-        cache.set(state, True, timeout=settings.WECHAT_SCOPE_TIMEOUT)
+        cache_key = WECHAT_LOGIN_STATE_KEY.format(state=state)
+        cache.set(cache_key, True, timeout=settings.WECHAT_SCOPE_TIMEOUT)
         return Response({"app_id": settings.WECHAT_APP_ID, "state": state})
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
@@ -204,9 +210,10 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # check state
-        if not cache.get(request_data["state"]):
+        cache_key = WECHAT_LOGIN_STATE_KEY.format(state=request_data["state"])
+        if not cache.get(cache_key):
             raise StateInvalid()
-        cache.delete(request_data["state"])
+        cache.delete(cache_key)
 
         # load access token
         url = (
@@ -245,7 +252,8 @@ class UserSignViewSet(MainViewSet):
             await client.aclose()
 
         code = uniq_id()
-        cache.set(code, json.dumps(user_info, ensure_ascii=False), timeout=settings.WECHAT_SCOPE_TIMEOUT)
+        cache_key = WECHAT_USER_INFO_KEY.format(code=code)
+        cache.set(cache_key, json.dumps(user_info, ensure_ascii=False), timeout=settings.WECHAT_SCOPE_TIMEOUT)
 
         # load user
         user: User = await database_sync_to_async(USER_MODEL.load_user_by_union_id)(union_id=user_info["unionid"])
@@ -262,12 +270,13 @@ class UserSignViewSet(MainViewSet):
         Update User Info By WeChat
         """
 
+        cache_key = WECHAT_USER_INFO_KEY.format(code=wechat_code)
         try:
-            user_info = json.loads(cache.get(wechat_code, default="{}"))
+            user_info = json.loads(cache.get(cache_key, default="{}"))
         except JSONDecodeError:
             return
 
-        cache.delete(wechat_code)
+        cache.delete(cache_key)
 
         user.wechat_union_id = user_info["unionid"]
         user.wechat_open_id = user_info["openid"]

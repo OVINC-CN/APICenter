@@ -7,6 +7,11 @@ PHONE_VERIFY_CODE_LENGTH = 6
 PHONE_VERIFY_CODE_TIMEOUT = 60 * 60  # second
 PHONE_VERIFY_CODE_KEY = "phone_verify_code:{phone_number}"
 
+LOGIN_CODE_KEY = "login_code:{code}"
+
+WECHAT_LOGIN_STATE_KEY = "wechat_login_state:{state}"
+WECHAT_USER_INFO_KEY = "wechat_user_info:{code}"
+
 
 class UserTypeChoices(TextChoices):
     """
