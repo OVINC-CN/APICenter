@@ -1,3 +1,5 @@
+from urllib.parse import quote
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.views import serve
@@ -11,9 +13,13 @@ def serve_static(request, path, insecure=True, **kwargs):
     return serve(request, path, insecure=True, **kwargs)
 
 
+ADMIN_PAGE_URL = f"{settings.BACKEND_URL}/admin/"
+ADMIN_PAGE_LOGIN_URL = f"{settings.FRONTEND_URL}/login/?next={quote(ADMIN_PAGE_URL)}"
+
 urlpatterns = [
     path("favicon.ico", RedirectView.as_view(url=f"{settings.FRONTEND_URL}/favicon.ico")),
     re_path(r"^static/(?P<path>.*)$", serve_static, name="static"),
+    path("admin/login/", RedirectView.as_view(url=ADMIN_PAGE_LOGIN_URL.replace("%", "%%"))),
     path("admin/", admin.site.urls),
     path("", include("apps.home.urls")),
     path("account/", include("apps.account.urls")),

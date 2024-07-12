@@ -21,6 +21,7 @@ APP_SECRET = getenv_or_raise("APP_SECRET")
 SECRET_KEY = getenv_or_raise("APP_SECRET")
 
 # Hosts
+BACKEND_URL = getenv_or_raise("BACKEND_URL")
 ALLOWED_HOSTS = [getenv_or_raise("BACKEND_HOST")]
 CORS_ALLOW_CREDENTIALS = strtobool(os.getenv("CORS_ALLOW_CREDENTIALS", "True"))
 CORS_ORIGIN_ALLOW_ALL = strtobool(os.getenv("CORS_ORIGIN_ALLOW_ALL", "True"))
@@ -64,10 +65,7 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "ovinc_client.core.middlewares.SQLDebugMiddleware",
 ]
-if DEBUG:
-    MIDDLEWARE += ["pyinstrument.middleware.ProfilerMiddleware"]
-    PYINSTRUMENT_PROFILE_DIR = ".report"
-else:
+if not DEBUG:
     MIDDLEWARE += ["ovinc_client.core.middlewares.UnHandleExceptionMiddleware"]
 
 # Urls
