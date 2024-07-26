@@ -9,9 +9,14 @@ from django.contrib.auth.models import AbstractUser, AnonymousUser, PermissionsM
 from django.contrib.auth.models import UserManager as _UserManager
 from django.core.cache import cache
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy
 from django_redis.client import DefaultClient
-from ovinc_client.core.constants import MAX_CHAR_LENGTH, SHORT_CHAR_LENGTH
+from ovinc_client.core.constants import (
+    MAX_CHAR_LENGTH,
+    MEDIUM_CHAR_LENGTH,
+    SHORT_CHAR_LENGTH,
+)
 from ovinc_client.core.models import SoftDeletedManager, SoftDeletedModel
 from ovinc_client.core.utils import num_code, uniq_id
 
@@ -161,6 +166,17 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
     def load_user_by_union_id(cls, union_id: str) -> "User":
         return cls.objects.filter(wechat_union_id=union_id).first()
 
+    def logout_all(self) -> None:
+        """
+        Logout all token
+        """
+
+        # pylint: disable=E1101
+        tokens = UserToken.objects.filter(user=self, expired_at__gte=timezone.now())
+        for token in tokens:
+            cache.delete(token.cache_key)
+        tokens.update(expired_at=timezone.now())
+
 
 class CustomAnonymousUser(AnonymousUser, abc.ABC):
     """
@@ -169,3 +185,27 @@ class CustomAnonymousUser(AnonymousUser, abc.ABC):
 
     nick_name = "AnonymousUser"
     user_type = UserTypeChoices.PLATFORM.value
+
+
+class UserToken(models.Model):
+    """
+    User Token
+    """
+
+    id = models.BigAutoField(gettext_lazy("ID"), primary_key=True)
+    user = models.ForeignKey(
+        verbose_name=gettext_lazy("User"), to="User", on_delete=models.PROTECT, db_constraint=False
+    )
+    session_key = models.CharField(gettext_lazy("Session Key"), max_length=MAX_CHAR_LENGTH, db_index=True)
+    cache_key = models.CharField(gettext_lazy("Cache Key"), max_length=MAX_CHAR_LENGTH, db_index=True)
+    login_ip = models.CharField(gettext_lazy("Login IP"), max_length=MEDIUM_CHAR_LENGTH, db_index=True)
+    user_agent = models.TextField(gettext_lazy("User Agent"), null=True, blank=True)
+    expired_at = models.DateTimeField(gettext_lazy("Expired at"), db_index=True)
+
+    class Meta:
+        verbose_name = gettext_lazy("User Token")
+        verbose_name_plural = verbose_name
+        ordering = ["-id"]
+        index_together = [
+            ["user", "expired_at"],
+        ]

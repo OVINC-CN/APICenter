@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-10 18:55+0800\n"
+"POT-Creation-Date: 2024-07-26 15:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Is Expired"
+msgstr "是否过期"
+
+msgid "Yes"
+msgstr "是"
+
+msgid "No"
+msgstr "否"
 
 msgid "User Account"
 msgstr "用户账户"
@@ -108,6 +117,29 @@ msgstr "是否管理员"
 msgid "User"
 msgstr "用户"
 
+msgid "ID"
+msgstr "ID"
+
+msgid "Session Key"
+msgstr "会话键"
+
+msgid "Cache Key"
+msgstr "缓存键"
+
+msgid "Login IP"
+msgstr ""
+
+#, fuzzy
+#| msgid "User Account"
+msgid "User Agent"
+msgstr "用户账户"
+
+msgid "Expired at"
+msgstr "过期时间"
+
+msgid "User Token"
+msgstr "用户令牌"
+
 msgid "Username"
 msgstr "用户名"
 
@@ -155,9 +187,6 @@ msgstr "应用图标"
 
 msgid "App Desc"
 msgstr "应用描述"
-
-msgid "ID"
-msgstr "ID"
 
 msgid "Manager"
 msgstr "管理员"
