@@ -208,4 +208,5 @@ class UserToken(models.Model):
         ordering = ["-id"]
         index_together = [
             ["user", "expired_at"],
+            ["user", "session_key", "expired_at"],
         ]

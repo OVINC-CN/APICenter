@@ -103,7 +103,7 @@ class UserSignViewSet(MainViewSet):
         Sign out
         """
 
-        auth.logout(request)
+        await database_sync_to_async(auth.logout)(request)
         return Response()
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
