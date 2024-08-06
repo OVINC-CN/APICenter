@@ -233,6 +233,8 @@ OAUTH_CODE_TIMEOUT = int(os.getenv("OAUTH_CODE_TIMEOUT", str(60 * 5)))
 # WeChat
 WECHAT_APP_ID = os.getenv("WECHAT_APP_ID")
 WECHAT_APP_KEY = os.getenv("WECHAT_APP_KEY")
+MP_WECHAT_APP_ID = os.getenv("MP_WECHAT_APP_ID")
+MP_WECHAT_APP_KEY = os.getenv("MP_WECHAT_APP_KEY")
 WECHAT_SCOPE_TIMEOUT = int(os.getenv("WECHAT_SCOPE_TIMEOUT", str(60 * 30)))
 WECHAT_OAUTH_API = os.getenv("WECHAT_OAUTH_API", "https://api.weixin.qq.com/sns/oauth2")
 WECHAT_USER_INFO_API = os.getenv("WECHAT_OAUTH_API", "https://api.weixin.qq.com/sns/userinfo")
