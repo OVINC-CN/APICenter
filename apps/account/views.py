@@ -40,6 +40,7 @@ from apps.account.serializers import (
     WeChatLoginReqSerializer,
 )
 from core.auth import ApplicationAuthenticate
+from core.utils import is_wechat
 
 USER_MODEL: User = get_user_model()
 
@@ -196,8 +197,17 @@ class UserSignViewSet(MainViewSet):
         state = uniq_id()
         cache_key = WECHAT_LOGIN_STATE_KEY.format(state=state)
         cache.set(cache_key, True, timeout=settings.WECHAT_SCOPE_TIMEOUT)
-        return Response({"app_id": settings.WECHAT_APP_ID, "state": state})
 
+        is_wechat_ua = is_wechat(request)
+        return Response(
+            {
+                "app_id": settings.MP_WECHAT_APP_ID if is_wechat_ua else settings.WECHAT_APP_ID,
+                "state": state,
+                "is_wechat": is_wechat_ua,
+            }
+        )
+
+    # pylint: disable=R0914
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
     async def wechat_login(self, request, *args, **kwargs):
         """
@@ -215,11 +225,19 @@ class UserSignViewSet(MainViewSet):
             raise StateInvalid()
         cache.delete(cache_key)
 
+        # load app key app secret
+        if is_wechat(request):
+            app_id = settings.MP_WECHAT_APP_ID
+            app_key = settings.MP_WECHAT_APP_KEY
+        else:
+            app_id = settings.WECHAT_APP_ID
+            app_key = settings.WECHAT_APP_KEY
+
         # load access token
         url = (
             f"{settings.WECHAT_OAUTH_API}/access_token"
-            f"?appid={settings.WECHAT_APP_ID}"
-            f"&secret={settings.WECHAT_APP_KEY}"
+            f"?appid={app_id}"
+            f"&secret={app_key}"
             f"&code={request_data['code']}"
             f"&grant_type={WeChatAuthType.CODE}"
         )
