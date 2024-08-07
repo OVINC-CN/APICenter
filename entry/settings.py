@@ -226,6 +226,7 @@ NOTICE_ROBOT_CONTENT_HELP = os.getenv(
     "NOTICE_ROBOT_CONTENT_HELP", "https://developer.work.weixin.qq.com/document/path/91770"
 )
 NOTICE_SMS_ID_VERIFY_CODE = os.getenv("NOTICE_SMS_ID_VERIFY_CODE", "")
+NOTICE_SMS_ID_VERIFY_CODE_GLOBAL = os.getenv("NOTICE_SMS_ID_VERIFY_CODE_GLOBAL", "")
 
 # OAuth
 OAUTH_CODE_TIMEOUT = int(os.getenv("OAUTH_CODE_TIMEOUT", str(60 * 5)))

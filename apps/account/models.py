@@ -25,6 +25,7 @@ from apps.account.constants import (
     PHONE_VERIFY_CODE_KEY,
     PHONE_VERIFY_CODE_LENGTH,
     PHONE_VERIFY_CODE_TIMEOUT,
+    PhoneNumberAreas,
     UserTypeChoices,
 )
 from apps.cel.tasks import send_notice
@@ -145,8 +146,14 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
             notice_type=NoticeWayChoices.MSG,
             usernames=[],
             receivers=[phone_number],
-            content={"tid": settings.NOTICE_SMS_ID_VERIFY_CODE, "params": [code, str(PHONE_VERIFY_CODE_TIMEOUT // 60)]},
+            content={"tid": cls.get_verify_code_tid(area), "params": [code, str(PHONE_VERIFY_CODE_TIMEOUT // 60)]},
         )
+
+    @classmethod
+    def get_verify_code_tid(cls, area: str) -> str:
+        if area == PhoneNumberAreas.CHINA:
+            return settings.NOTICE_SMS_ID_VERIFY_CODE
+        return settings.NOTICE_SMS_ID_VERIFY_CODE_GLOBAL
 
     @classmethod
     def check_phone_verify_code(cls, area: str, phone_number: str, code: str) -> bool:
