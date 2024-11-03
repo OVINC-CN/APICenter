@@ -29,3 +29,4 @@ class BuildInKeys:
     GONGAN_FILLING_URL: CONFIG_DEFAULT_T = "gongan_filling_url", ""
     USER_AGREEMENT: CONFIG_DEFAULT_T = "user_agreement", ""
     PRIVACY_AGREEMENT: CONFIG_DEFAULT_T = "privacy_agreement", ""
+    BACKGROUND_IMAGE: CONFIG_DEFAULT_T = "background_image", ""
