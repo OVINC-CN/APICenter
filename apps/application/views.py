@@ -1,4 +1,3 @@
-from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from ovinc_client.core.auth import SessionAuthenticate
 from ovinc_client.core.viewsets import MainViewSet
@@ -30,7 +29,7 @@ class ApplicationViewSet(MainViewSet):
         """
 
         # filter
-        queryset = await database_sync_to_async(Application.get_queryset)()
+        queryset = Application.get_queryset().filter(is_hidden=False)
 
         # response
         serializer = ApplicationListSerializer(queryset, many=True)

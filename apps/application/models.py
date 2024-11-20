@@ -51,6 +51,7 @@ class Application(SoftDeletedModel):
     app_url = models.URLField(gettext_lazy("App Url"), null=True, blank=True)
     app_logo = models.URLField(gettext_lazy("App Logo"), null=True, blank=True)
     app_desc = models.TextField(gettext_lazy("App Desc"), null=True, blank=True)
+    is_hidden = models.BooleanField(gettext_lazy("Is Hidden"), default=False)
 
     objects = ApplicationObjects()
 
