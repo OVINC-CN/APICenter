@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-29 20:25+0800\n"
+"POT-Creation-Date: 2024-11-29 21:14+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -314,6 +314,9 @@ msgstr "事件名"
 
 msgid "Audit ID"
 msgstr "审核ID"
+
+msgid "Is Sensitive"
+msgstr "敏感"
 
 msgid "Detail"
 msgstr "详情"

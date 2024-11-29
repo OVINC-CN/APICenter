@@ -25,7 +25,7 @@ class AuditCallback(BaseModel):
         choices=CICallbackEventName.choices,
     )
     audit_id = models.CharField(verbose_name=gettext_lazy("Audit ID"), max_length=MAX_CHAR_LENGTH, db_index=True)
-    is_sensitive = models.BooleanField(verbose_name=gettext_lazy("Result"), db_index=True)
+    is_sensitive = models.BooleanField(verbose_name=gettext_lazy("Is Sensitive"), db_index=True)
     detail = models.JSONField(verbose_name=gettext_lazy("Detail"))
     creation_time = models.CharField(
         verbose_name=gettext_lazy("Audit Time"), max_length=SHORT_CHAR_LENGTH, db_index=True, null=True, blank=True
