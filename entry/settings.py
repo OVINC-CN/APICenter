@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.cel",
     "apps.home",
     "apps.notice",
+    "apps.tcloud",
     "ovinc_client.tcaptcha",
     "ovinc_client.trace",
 ]
@@ -230,6 +231,10 @@ NOTICE_ROBOT_CONTENT_HELP = os.getenv(
 )
 NOTICE_SMS_ID_VERIFY_CODE = os.getenv("NOTICE_SMS_ID_VERIFY_CODE", "")
 NOTICE_SMS_ID_VERIFY_CODE_GLOBAL = os.getenv("NOTICE_SMS_ID_VERIFY_CODE_GLOBAL", "")
+NOTICE_AUDIT_SENSITIVE_ROBOT = os.getenv("NOTICE_AUDIT_SENSITIVE_ROBOT", "")
+
+# TCI Callback
+TCI_AUDIT_CALLBACK_PREFIX = os.getenv("TCI_AUDIT_CALLBACK_PREFIX", "")
 
 # OAuth
 OAUTH_CODE_TIMEOUT = int(os.getenv("OAUTH_CODE_TIMEOUT", str(60 * 5)))

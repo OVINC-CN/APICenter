@@ -25,6 +25,7 @@ urlpatterns = [
     path("account/", include("apps.account.urls")),
     path("application/", include("apps.application.urls")),
     path("notice/", include("apps.notice.urls")),
+    path("tcloud/", include("apps.tcloud.urls")),
     path("trace/", include("ovinc_client.trace.urls")),
     path("tcaptcha/", include("ovinc_client.tcaptcha.urls")),
 ]
