@@ -27,7 +27,9 @@ class AuditCallback(BaseModel):
     audit_id = models.CharField(verbose_name=gettext_lazy("Audit ID"), max_length=MAX_CHAR_LENGTH, db_index=True)
     is_sensitive = models.BooleanField(verbose_name=gettext_lazy("Result"), db_index=True)
     detail = models.JSONField(verbose_name=gettext_lazy("Detail"))
-    creation_time = models.DateTimeField(verbose_name=gettext_lazy("Audit Time"), db_index=True)
+    creation_time = models.CharField(
+        verbose_name=gettext_lazy("Audit Time"), max_length=SHORT_CHAR_LENGTH, db_index=True, null=True, blank=True
+    )
     callback_time = models.DateTimeField(verbose_name=gettext_lazy("Callback Time"), db_index=True, auto_now_add=True)
     updated_time = models.DateTimeField(verbose_name=gettext_lazy("Updated Time"), db_index=True, auto_now=True)
     is_handled = models.BooleanField(verbose_name=gettext_lazy("Handled"), db_index=True, default=False)
