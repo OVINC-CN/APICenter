@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-20 20:41+0800\n"
+"POT-Creation-Date: 2024-11-29 20:25+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -281,6 +281,73 @@ msgstr "机器人ID"
 #, python-format
 msgid "Notice Type not Exists => %s"
 msgstr "通知类型不存在 => %s"
+
+msgid "TCloud"
+msgstr "腾讯云"
+
+msgid "Review Image"
+msgstr "图片审核"
+
+msgid "Review Document"
+msgstr "文档审核"
+
+msgid "Review Video"
+msgstr "视频审核"
+
+msgid "Review Audio"
+msgstr "音频审核"
+
+msgid "Review Text"
+msgstr "文本审核"
+
+msgid "Review HTML"
+msgstr "网页审核"
+
+msgid "Bucket Region"
+msgstr "地域"
+
+msgid "Bucket ID"
+msgstr "存储桶ID"
+
+msgid "Event Name"
+msgstr "事件名"
+
+msgid "Audit ID"
+msgstr "审核ID"
+
+msgid "Detail"
+msgstr "详情"
+
+msgid "Audit Time"
+msgstr "审核时间"
+
+msgid "Callback Time"
+msgstr "回调时间"
+
+msgid "Updated Time"
+msgstr "更新时间"
+
+msgid "Handled"
+msgstr "已处理"
+
+msgid "Audit Callback"
+msgstr "审核回调"
+
+#, python-format
+msgid ""
+"<font color=\"warning\">Sensitive Object Notification</font>\n"
+"Bucket Region: %(region)s\n"
+"Bucket ID: %(bucket)s\n"
+"Event Name: %(event)s\n"
+"Audit ID: %(audit_id)s\n"
+"Creation Time: %(creation_time)s\n"
+msgstr ""
+"<font color=\"warning\">敏感对象通知</font>\n"
+"地域: %(region)s\n"
+"存储桶: %(bucket)s\n"
+"事件: %(event)s\n"
+"审核ID: %(audit_id)s\n"
+"审核时间: %(creation_time)s\n"
 
 msgid "App Auth Params is not Json"
 msgstr "应用鉴权参数不是JSON"
