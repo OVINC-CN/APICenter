@@ -15,6 +15,7 @@ from apps.notice.serializers import (
 )
 from apps.notice.utils import NoticeBase
 from core.auth import ApplicationAuthenticate
+from core.threadpool import db_executor
 
 
 class NoticeViewSet(MainViewSet):
@@ -80,7 +81,9 @@ class NoticeViewSet(MainViewSet):
         # get instance
         instance = None
         if request.data.get("id"):
-            instance = await database_sync_to_async(get_object_or_404)(Robot, pk=request.data.pop("id"))
+            instance = await database_sync_to_async(get_object_or_404, executor=db_executor)(
+                Robot, pk=request.data.pop("id")
+            )
 
         # validate request
         request_serializer = RegistryRobotSerializer(instance=instance, data=request.data, partial=bool(instance))

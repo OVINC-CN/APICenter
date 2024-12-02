@@ -10,6 +10,7 @@ from apps.cel.tasks import send_notice
 from apps.notice.constants import NoticeWayChoices
 from apps.tcloud.models import AuditCallback
 from apps.tcloud.serializers import TCICallbackSerializer
+from core.threadpool import db_executor
 
 
 class AuditCallbackViewSet(MainViewSet):
@@ -27,7 +28,9 @@ class AuditCallbackViewSet(MainViewSet):
         req_slz = TCICallbackSerializer(data=request.data)
         req_slz.is_valid(raise_exception=True)
         # save
-        callback = await database_sync_to_async(AuditCallback.add_callback)(req_slz.validated_data)
+        callback = await database_sync_to_async(AuditCallback.add_callback, executor=db_executor)(
+            req_slz.validated_data
+        )
         if callback.is_sensitive:
             send_notice.delay(
                 notice_type=NoticeWayChoices.ROBOT,

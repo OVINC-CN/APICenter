@@ -9,6 +9,7 @@ from rest_framework.authentication import BaseAuthentication
 from apps.application.models import Application
 from core.constants import APP_AUTH_HEADER_KEY
 from core.exceptions import AppAuthFailed
+from core.threadpool import db_executor
 
 USER_MODEL = get_user_model()
 
@@ -34,7 +35,7 @@ class ApplicationAuthenticate(BaseAuthentication):
             raise AppAuthFailed(gettext("App Auth Params Not Exist"))
         # varify app
         try:
-            app = await database_sync_to_async(Application.objects.get)(pk=app_code)
+            app = await database_sync_to_async(Application.objects.get, executor=db_executor)(pk=app_code)
         except Application.DoesNotExist as err:  # pylint: disable=E1101
             raise AppAuthFailed(gettext("App Not Exist")) from err
         # verify secret

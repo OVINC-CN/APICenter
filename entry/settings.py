@@ -255,3 +255,6 @@ CAPTCHA_ENABLED = strtobool(os.getenv("CAPTCHA_ENABLED", "False"))
 CAPTCHA_APP_ID = int(os.getenv("CAPTCHA_APP_ID", "0"))
 CAPTCHA_APP_SECRET = os.getenv("CAPTCHA_APP_SECRET", "")
 CAPTCHA_APP_INFO_TIMEOUT = int(os.getenv("CAPTCHA_APP_INFO_TIMEOUT", str(60 * 10)))
+
+# Thread
+DB_EXECUTOR_SIZE = int(os.getenv("DB_EXECUTOR_SIZE", str(10)))

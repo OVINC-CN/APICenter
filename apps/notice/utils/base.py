@@ -13,6 +13,7 @@ from apps.account.models import User
 from apps.cel.tasks import send_notice
 from apps.notice.constants import NoticeWayChoices
 from apps.notice.models import NoticeLog
+from core.threadpool import db_executor
 
 USER_MODEL: User = get_user_model()
 
@@ -61,7 +62,7 @@ class NoticeBase:
             msg = traceback.format_exc()
             logger.error("[%s SendNoticeFailed] Err => %s; Detail => %s", self.__class__.__name__, err, msg)
             result = {"err": str(err)}
-        await database_sync_to_async(NoticeLog.objects.create)(
+        await database_sync_to_async(NoticeLog.objects.create, executor=db_executor)(
             receivers=self.receivers, content=self.content, extra_params=self.kwargs, result=str(result)
         )
         return result

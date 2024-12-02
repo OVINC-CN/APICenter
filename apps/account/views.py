@@ -40,6 +40,7 @@ from apps.account.serializers import (
     WeChatLoginReqSerializer,
 )
 from core.auth import ApplicationAuthenticate
+from core.threadpool import db_executor
 from core.utils import is_wechat
 
 USER_MODEL: User = get_user_model()
@@ -81,7 +82,7 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # login
-        user: User = await database_sync_to_async(auth.authenticate)(request, **request_data)
+        user: User = await database_sync_to_async(auth.authenticate, executor=db_executor)(request, **request_data)
         if not user:
             raise WrongSignInParam()
 
@@ -90,7 +91,7 @@ class UserSignViewSet(MainViewSet):
             await self.update_user_by_wechat(user, request_data["wechat_code"])
 
         # auth session
-        await database_sync_to_async(auth.login)(request, user)
+        await database_sync_to_async(auth.login, executor=db_executor)(request, user)
 
         # oauth
         if request_data["is_oauth"]:
@@ -104,7 +105,7 @@ class UserSignViewSet(MainViewSet):
         Sign out
         """
 
-        await database_sync_to_async(auth.logout)(request)
+        await database_sync_to_async(auth.logout, executor=db_executor)(request)
         return Response()
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
@@ -119,7 +120,7 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # save
-        user = await database_sync_to_async(USER_MODEL.objects.create_user)(
+        user = await database_sync_to_async(USER_MODEL.objects.create_user, executor=db_executor)(
             last_login=datetime.datetime.now(),
             username=request_data["username"],
             password=request_data["password"],
@@ -132,7 +133,7 @@ class UserSignViewSet(MainViewSet):
             await self.update_user_by_wechat(user, request_data["wechat_code"])
 
         # login session
-        await database_sync_to_async(auth.login)(request, user)
+        await database_sync_to_async(auth.login, executor=db_executor)(request, user)
 
         # oauth
         if request_data["is_oauth"]:
@@ -183,7 +184,9 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # load user
-        is_success, user = await database_sync_to_async(USER_MODEL.check_oauth_code)(request_data["code"])
+        is_success, user = await database_sync_to_async(USER_MODEL.check_oauth_code, executor=db_executor)(
+            request_data["code"]
+        )
         if is_success:
             return Response(await UserInfoSerializer(instance=user).adata)
         raise WrongToken()
@@ -274,10 +277,12 @@ class UserSignViewSet(MainViewSet):
         cache.set(cache_key, json.dumps(user_info, ensure_ascii=False), timeout=settings.WECHAT_SCOPE_TIMEOUT)
 
         # load user
-        user: User = await database_sync_to_async(USER_MODEL.load_user_by_union_id)(union_id=user_info["unionid"])
+        user: User = await database_sync_to_async(USER_MODEL.load_user_by_union_id, executor=db_executor)(
+            union_id=user_info["unionid"]
+        )
         if user:
             await self.update_user_by_wechat(user, code)
-            await database_sync_to_async(auth.login)(request, user)
+            await database_sync_to_async(auth.login, executor=db_executor)(request, user)
             return Response({"code": user.generate_oauth_code() if request_data["is_oauth"] else ""})
 
         # need registry
@@ -299,7 +304,9 @@ class UserSignViewSet(MainViewSet):
         user.wechat_union_id = user_info["unionid"]
         user.wechat_open_id = user_info["openid"]
         user.avatar = user_info["headimgurl"]
-        await database_sync_to_async(user.save)(update_fields=["wechat_union_id", "wechat_open_id", "avatar"])
+        await database_sync_to_async(user.save, executor=db_executor)(
+            update_fields=["wechat_union_id", "wechat_open_id", "avatar"]
+        )
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
     async def reset_password(self, request, *args, **kwargs) -> Response:
@@ -314,14 +321,14 @@ class UserSignViewSet(MainViewSet):
 
         # load user
         try:
-            user: User = await database_sync_to_async(USER_MODEL.objects.get)(
+            user: User = await database_sync_to_async(USER_MODEL.objects.get, executor=db_executor)(
                 username=request_data["username"], phone_number=request_data["phone_number"]
             )
         except USER_MODEL.DoesNotExist as err:
             raise UserNotExist() from err
 
         # set new password
-        await database_sync_to_async(user.reset_password)(request_data["password"])
+        await database_sync_to_async(user.reset_password, executor=db_executor)(request_data["password"])
 
         return Response()
 
