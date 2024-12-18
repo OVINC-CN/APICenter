@@ -1,10 +1,14 @@
+import hashlib
+import secrets
+import time
 from typing import List
 
 from django.conf import settings
-from django.contrib.auth.hashers import check_password, make_password
+from django.core.cache import cache
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy
-from ovinc_client.core.constants import SHORT_CHAR_LENGTH
+from django_redis.client import DefaultClient
+from ovinc_client.core.constants import MAX_CHAR_LENGTH, SHORT_CHAR_LENGTH
 from ovinc_client.core.models import (
     BaseModel,
     ForeignKey,
@@ -14,6 +18,9 @@ from ovinc_client.core.models import (
 )
 
 from apps.account.models import User
+from core.constants import APP_AUTH_NONCE_CACHE_KEY
+
+cache: DefaultClient
 
 
 class ApplicationObjects(SoftDeletedManager):
@@ -47,7 +54,7 @@ class Application(SoftDeletedModel):
 
     app_name = models.CharField(gettext_lazy("App Name"), max_length=SHORT_CHAR_LENGTH)
     app_code = models.CharField(gettext_lazy("App Code"), max_length=SHORT_CHAR_LENGTH, primary_key=True)
-    app_secret = models.TextField(gettext_lazy("App Secret (Encoded)"), blank=True, null=True)
+    app_secret = models.CharField(gettext_lazy("App Secret"), max_length=MAX_CHAR_LENGTH, blank=True, null=True)
     app_url = models.URLField(gettext_lazy("App Url"), null=True, blank=True)
     app_logo = models.URLField(gettext_lazy("App Logo"), null=True, blank=True)
     app_desc = models.TextField(gettext_lazy("App Desc"), null=True, blank=True)
@@ -60,24 +67,34 @@ class Application(SoftDeletedModel):
         verbose_name_plural = verbose_name
         ordering = ["app_code"]
 
-    def check_secret(self, raw_secret: str) -> bool:
+    def check_sign(self, signature: str, timestamp: str, nonce: str) -> bool:
         """
-        check secret
+        check signature
         """
 
-        if settings.ENCRYPT_APP_SECRET:
-            return check_password(raw_secret, self.app_secret)
-        return raw_secret == self.app_secret
+        # check timestamp
+        if not timestamp.isdigit() or int(timestamp) + settings.APP_AUTH_SIGN_EXPIRE < time.time():
+            return False
+
+        # check nonce deplicate
+        if not cache.add(
+            key=APP_AUTH_NONCE_CACHE_KEY.format(appid=self.app_code, nonce=nonce),
+            value=signature,
+            timeout=settings.APP_AUTH_SIGN_EXPIRE,
+        ):
+            return False
+
+        # check signature
+        raw_content = f"{timestamp}-{nonce}-{self.app_secret}"
+        expect_signature = hashlib.sha256(raw_content.encode()).hexdigest()
+        return secrets.compare_digest(signature, expect_signature)
 
     def set_secret(self, raw_secret: str) -> None:
         """
         set secret
         """
 
-        if settings.ENCRYPT_APP_SECRET:
-            self.app_secret = make_password(raw_secret)
-        else:
-            self.app_secret = raw_secret
+        self.app_secret = raw_secret
         self.save(update_fields=["app_secret"])
 
 

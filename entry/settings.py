@@ -195,8 +195,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "account.User"
 
 # App
-# enable will spend extra time at app request
-ENCRYPT_APP_SECRET = strtobool(os.getenv("ENCRYPT_APP_SECRET", "False"))
+APP_AUTH_SIGN_EXPIRE = int(os.getenv("APP_AUTH_SIGN_EXPIRE", "60"))
 
 # Celery
 CELERY_TIMEZONE = TIME_ZONE
