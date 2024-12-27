@@ -1,5 +1,6 @@
+import re
+
 from adrf.serializers import ModelSerializer, Serializer
-from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext, gettext_lazy
 from ovinc_client.core.async_tools import SyncRunner
@@ -14,6 +15,8 @@ from apps.account.constants import (
 )
 from apps.account.exceptions import PhoneVerifyCodeInvalid
 from apps.account.models import User
+from apps.home.constants import BuildInKeys
+from apps.home.models import MetaConfig
 
 USER_MODEL: User = get_user_model()
 
@@ -91,14 +94,18 @@ class UserRegistrySerializer(ModelSerializer):
             raise PhoneVerifyCodeInvalid()
         return data
 
+    def validate_username(self, username: str) -> str:
+        username_extra_regex = MetaConfig.objects.filter(key=BuildInKeys.USERNAME_EXTRA_REGEX[0]).first()
+        if not username_extra_regex:
+            return username
+        if re.compile(username_extra_regex.val).match(username):
+            return username
+        raise serializers.ValidationError(gettext("Username Invalid"))
+
     def validate_phone_number(self, phone_number: str) -> str:
-        if SyncRunner().run(self.check_phone_number_exists(phone_number)):
+        if USER_MODEL.objects.filter(phone_number=phone_number).exists():
             raise serializers.ValidationError(gettext("Phone Number Already Exists"))
         return phone_number
-
-    @database_sync_to_async
-    def check_phone_number_exists(self, phone_number: str):
-        return USER_MODEL.objects.filter(phone_number=phone_number).exists()
 
 
 class VerifyCodeRequestSerializer(Serializer):

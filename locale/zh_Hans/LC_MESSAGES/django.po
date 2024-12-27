@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-18 15:18+0800\n"
+"POT-Creation-Date: 2024-12-27 13:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,6 +160,9 @@ msgstr "电话归属国家"
 
 msgid "Phone Verify Code"
 msgstr "电话验证码"
+
+msgid "Username Invalid"
+msgstr "用户名不符合校验规则"
 
 msgid "Phone Number Already Exists"
 msgstr "电话已被使用"
