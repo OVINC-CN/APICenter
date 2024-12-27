@@ -115,7 +115,7 @@ class UserSignViewSet(MainViewSet):
 
         # validate request
         request_serializer = UserRegistrySerializer(data=request.data, context={"user_ip": get_ip(request)})
-        request_serializer.is_valid(raise_exception=True)
+        await database_sync_to_async(request_serializer.is_valid)(raise_exception=True)
         request_data = request_serializer.validated_data
 
         # save
