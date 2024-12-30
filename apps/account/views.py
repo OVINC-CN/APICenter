@@ -36,7 +36,7 @@ from apps.account.serializers import (
     SignInSerializer,
     UserInfoSerializer,
     UserRegistrySerializer,
-    VerifyTicketRequestSerializer,
+    VerifyCodeRequestSerializer,
     WeChatLoginReqSerializer,
 )
 from core.auth import ApplicationAuthenticate
@@ -92,6 +92,10 @@ class UserSignViewSet(MainViewSet):
         # auth session
         await database_sync_to_async(auth.login)(request, user)
 
+        # oauth
+        if request_data["is_oauth"]:
+            return Response({"code": user.generate_oauth_code()})
+
         return Response()
 
     @action(methods=["GET"], detail=False)
@@ -130,6 +134,10 @@ class UserSignViewSet(MainViewSet):
         # login session
         await database_sync_to_async(auth.login)(request, user)
 
+        # oauth
+        if request_data["is_oauth"]:
+            return Response({"code": user.generate_oauth_code()})
+
         # response
         return Response()
 
@@ -155,19 +163,27 @@ class UserSignViewSet(MainViewSet):
         # response
         return Response()
 
-    @action(methods=["POST"], detail=False, authentication_classes=[ApplicationAuthenticate])
-    async def verify_ticket(self, request, *args, **kwargs):
+    @action(methods=["GET"], detail=False)
+    async def oauth_code(self, request, *args, **kwargs):
         """
-        verify ticket
+        oauth code
+        """
+
+        return Response({"code": request.user.generate_oauth_code()})
+
+    @action(methods=["POST"], detail=False, authentication_classes=[ApplicationAuthenticate])
+    async def verify_code(self, request, *args, **kwargs):
+        """
+        verify oauth code
         """
 
         # validate request
-        request_serializer = VerifyTicketRequestSerializer(data=request.data)
+        request_serializer = VerifyCodeRequestSerializer(data=request.data)
         request_serializer.is_valid(raise_exception=True)
         request_data = request_serializer.validated_data
 
         # load user
-        is_success, user = await database_sync_to_async(USER_MODEL.check_ticket)(request_data["ticket"])
+        is_success, user = await database_sync_to_async(USER_MODEL.check_oauth_code)(request_data["code"])
         if is_success:
             return Response(await UserInfoSerializer(instance=user).adata)
         raise WrongToken()
@@ -262,7 +278,7 @@ class UserSignViewSet(MainViewSet):
         if user:
             await self.update_user_by_wechat(user, code)
             await database_sync_to_async(auth.login)(request, user)
-            return Response()
+            return Response({"code": user.generate_oauth_code() if request_data["is_oauth"] else ""})
 
         # need registry
         return Response({"wechat_code": code})

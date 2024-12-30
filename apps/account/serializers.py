@@ -38,6 +38,7 @@ class SignInSerializer(Serializer):
 
     username = serializers.CharField(label=gettext_lazy("Username"))
     password = serializers.CharField(label=gettext_lazy("Password"))
+    is_oauth = serializers.BooleanField(label=gettext_lazy("Is OAuth"), default=False)
     wechat_code = serializers.CharField(label=gettext_lazy("WeChat Code"), required=False)
     tcaptcha = serializers.JSONField(label=gettext_lazy("Tencent Captcha"), required=False, default=dict)
 
@@ -56,6 +57,7 @@ class UserRegistrySerializer(ModelSerializer):
     """
 
     username = serializers.RegexField(label=gettext_lazy("Username"), regex=USERNAME_REGEX)
+    is_oauth = serializers.BooleanField(label=gettext_lazy("Is OAuth"), default=False)
     wechat_code = serializers.CharField(label=gettext_lazy("WeChat Code"), required=False)
     phone_area = serializers.ChoiceField(label=gettext_lazy("Phone Area"), choices=PhoneNumberAreas.choices)
     phone_number = serializers.CharField(label=gettext_lazy("Phone Number"))
@@ -72,6 +74,7 @@ class UserRegistrySerializer(ModelSerializer):
             "username",
             "nick_name",
             "password",
+            "is_oauth",
             "wechat_code",
             "phone_area",
             "phone_number",
@@ -105,12 +108,12 @@ class UserRegistrySerializer(ModelSerializer):
         return phone_number
 
 
-class VerifyTicketRequestSerializer(Serializer):
+class VerifyCodeRequestSerializer(Serializer):
     """
-    Verify Ticket
+    Verify Code
     """
 
-    ticket = serializers.CharField(label=gettext_lazy("Ticket"))
+    code = serializers.CharField(label=gettext_lazy("Code"))
 
 
 class WeChatLoginReqSerializer(Serializer):
@@ -120,6 +123,7 @@ class WeChatLoginReqSerializer(Serializer):
 
     code = serializers.CharField(label=gettext_lazy("Code"))
     state = serializers.CharField(label=gettext_lazy("State"))
+    is_oauth = serializers.BooleanField(label=gettext_lazy("Is OAuth"), default=False)
 
 
 class ResetPasswordRequestSerializer(Serializer):
