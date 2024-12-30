@@ -1,12 +1,15 @@
 import abc
 import hashlib
+from importlib import import_module
 from typing import Union
 
 from django.conf import settings
+from django.contrib.auth import SESSION_KEY
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, AnonymousUser, PermissionsMixin
 from django.contrib.auth.models import UserManager as _UserManager
+from django.contrib.sessions.backends.cache import SessionStore
 from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
@@ -118,6 +121,25 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
         try:
             return True, cls.objects.get(username=username)
         except cls.DoesNotExist:  # pylint: disable=E1101
+            return False, None
+
+    @classmethod
+    def check_ticket(cls, ticket: str) -> (bool, Union[models.Model, None]):
+        """
+        Check Ticket
+        """
+
+        engine = import_module(settings.SESSION_ENGINE)
+        session: SessionStore = engine.SessionStore(session_key=ticket)
+        if not session.load():
+            return False, None
+        user_id = session.get(SESSION_KEY)
+        if not user_id:
+            return False, None
+        try:
+            user = cls.objects.get(pk=user_id)
+            return True, user
+        except cls.DoesNotExist:
             return False, None
 
     def reset_password(self, password: str, is_raw: bool = False) -> None:

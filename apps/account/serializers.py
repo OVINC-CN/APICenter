@@ -116,6 +116,14 @@ class VerifyCodeRequestSerializer(Serializer):
     code = serializers.CharField(label=gettext_lazy("Code"))
 
 
+class VerifyTicketRequestSerializer(Serializer):
+    """
+    Verify Ticket
+    """
+
+    ticket = serializers.CharField(label=gettext_lazy("Ticket"))
+
+
 class WeChatLoginReqSerializer(Serializer):
     """
     WeChat Login
