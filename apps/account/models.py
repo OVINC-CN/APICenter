@@ -139,7 +139,7 @@ class User(SoftDeletedModel, AbstractBaseUser, PermissionsMixin):
         try:
             user = cls.objects.get(pk=user_id)
             return True, user
-        except cls.DoesNotExist:
+        except cls.DoesNotExist:  # pylint: disable=E1101
             return False, None
 
     def reset_password(self, password: str, is_raw: bool = False) -> None:
