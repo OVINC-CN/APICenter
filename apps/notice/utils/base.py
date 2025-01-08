@@ -2,8 +2,6 @@ import abc
 import traceback
 from typing import List, Union
 
-from asgiref.sync import async_to_sync
-from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext
@@ -22,8 +20,9 @@ class NoticeBase:
     Notice Base
     """
 
+    # pylint: disable=R1710
     @classmethod
-    async def send_notice(cls, notice_type: str, is_async: bool = True, **kwargs) -> None:
+    def send_notice(cls, notice_type: str, is_async: bool = True, **kwargs) -> None:
         if is_async:
             send_notice.delay(notice_type, **kwargs)
             return None
@@ -40,7 +39,7 @@ class NoticeBase:
 
     def __init__(self, usernames: List[str], content: Union[dict, str], **kwargs) -> None:
         self.kwargs = kwargs
-        self.receivers = async_to_sync(self._load_receivers)(usernames)
+        self.receivers = self._load_receivers(usernames)
         self.content = self._build_content(content)
 
     @property
@@ -48,33 +47,32 @@ class NoticeBase:
     def property_key(self) -> str:
         raise NotImplementedError
 
-    async def send(self) -> None:
+    def send(self) -> None:
         """
         send notice
         """
 
         logger.info("[%s SendNotice] Content => %s", self.__class__.__name__, self.content)
         try:
-            result = await self._send()
+            result = self._send()
             logger.info("[%s SendNoticeSuccess] Result => %s", self.__class__.__name__, result)
         except Exception as err:  # pylint: disable=W0718
             msg = traceback.format_exc()
             logger.error("[%s SendNoticeFailed] Err => %s; Detail => %s", self.__class__.__name__, err, msg)
             result = {"err": str(err)}
-        await database_sync_to_async(NoticeLog.objects.create)(
+        NoticeLog.objects.create(
             receivers=self.receivers, content=self.content, extra_params=self.kwargs, result=str(result)
         )
         return result
 
     @abc.abstractmethod
-    async def _send(self) -> None:
+    def _send(self) -> None:
         """
         send notice
         """
 
         raise NotImplementedError
 
-    @database_sync_to_async
     def _load_receivers(self, usernames: List[str]) -> List[str]:
         """
         trans username to receiver

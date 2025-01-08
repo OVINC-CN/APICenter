@@ -1,9 +1,7 @@
 import re
 
-from adrf.serializers import ModelSerializer, Serializer
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext, gettext_lazy
-from ovinc_client.core.async_tools import SyncRunner
 from ovinc_client.tcaptcha.exceptions import TCaptchaInvalid
 from ovinc_client.tcaptcha.utils import TCaptchaVerify
 from rest_framework import serializers
@@ -21,7 +19,7 @@ from apps.home.models import MetaConfig
 USER_MODEL: User = get_user_model()
 
 
-class UserInfoSerializer(ModelSerializer):
+class UserInfoSerializer(serializers.ModelSerializer):
     """
     User Info
     """
@@ -31,7 +29,7 @@ class UserInfoSerializer(ModelSerializer):
         fields = ["username", "nick_name", "last_login", "user_type"]
 
 
-class SignInSerializer(Serializer):
+class SignInSerializer(serializers.Serializer):
     """
     Sign in
     """
@@ -44,14 +42,12 @@ class SignInSerializer(Serializer):
 
     def validate(self, attrs: dict) -> dict:
         data = super().validate(attrs)
-        if not SyncRunner().run(
-            TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify()
-        ):
+        if not TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify():
             raise TCaptchaInvalid()
         return data
 
 
-class UserRegistrySerializer(ModelSerializer):
+class UserRegistrySerializer(serializers.ModelSerializer):
     """
     User Registry
     """
@@ -84,9 +80,7 @@ class UserRegistrySerializer(ModelSerializer):
 
     def validate(self, attrs: dict) -> dict:
         data = super().validate(attrs)
-        if not SyncRunner().run(
-            TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify()
-        ):
+        if not TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify():
             raise TCaptchaInvalid()
         if not USER_MODEL.check_phone_verify_code(
             area=data["phone_area"], phone_number=data["phone_number"], code=data["phone_verify"]
@@ -108,7 +102,7 @@ class UserRegistrySerializer(ModelSerializer):
         return phone_number
 
 
-class VerifyCodeRequestSerializer(Serializer):
+class VerifyCodeRequestSerializer(serializers.Serializer):
     """
     Verify Code
     """
@@ -116,7 +110,7 @@ class VerifyCodeRequestSerializer(Serializer):
     code = serializers.CharField(label=gettext_lazy("Code"))
 
 
-class WeChatLoginReqSerializer(Serializer):
+class WeChatLoginReqSerializer(serializers.Serializer):
     """
     WeChat Login
     """
@@ -126,7 +120,7 @@ class WeChatLoginReqSerializer(Serializer):
     is_oauth = serializers.BooleanField(label=gettext_lazy("Is OAuth"), default=False)
 
 
-class ResetPasswordRequestSerializer(Serializer):
+class ResetPasswordRequestSerializer(serializers.Serializer):
     """
     Reset Password
     """
@@ -144,9 +138,7 @@ class ResetPasswordRequestSerializer(Serializer):
 
     def validate(self, attrs: dict) -> dict:
         data = super().validate(attrs)
-        if not SyncRunner().run(
-            TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify()
-        ):
+        if not TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify():
             raise TCaptchaInvalid()
         if not USER_MODEL.check_phone_verify_code(
             area=data["phone_area"], phone_number=data["phone_number"], code=data["phone_verify"]
@@ -155,7 +147,7 @@ class ResetPasswordRequestSerializer(Serializer):
         return data
 
 
-class SendVerifyCodeRequestSerializer(Serializer):
+class SendVerifyCodeRequestSerializer(serializers.Serializer):
     """
     Verify Code
     """
@@ -166,8 +158,6 @@ class SendVerifyCodeRequestSerializer(Serializer):
 
     def validate(self, attrs: dict) -> dict:
         data = super().validate(attrs)
-        if not SyncRunner().run(
-            TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify()
-        ):
+        if not TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify():
             raise TCaptchaInvalid()
         return data

@@ -1,6 +1,5 @@
 from typing import Dict
 
-from channels.db import database_sync_to_async
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy
@@ -26,6 +25,5 @@ class MetaConfig(BaseModel):
         return str(self.key)
 
     @classmethod
-    @database_sync_to_async
     def as_map(cls, condition: Q) -> Dict[str, str]:
         return {config.key: config.val for config in cls.objects.filter(condition)}

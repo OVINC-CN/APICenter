@@ -21,7 +21,7 @@ class MsgHandler(NoticeBase):
     def property_key(self):
         return "phone_number"
 
-    async def _send(self) -> None:
+    def _send(self) -> None:
         req = models.SendSmsRequest()
         req.SmsSdkAppId = settings.NOTICE_MSG_TCLOUD_APP
         req.SignName = settings.NOTICE_MSG_TCLOUD_SIGN

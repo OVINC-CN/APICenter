@@ -21,7 +21,7 @@ class HomeView(MainViewSet):
     queryset = USER_MODEL.get_queryset()
     authentication_classes = [SessionAuthenticate]
 
-    async def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         msg = f"[{request.method}] Connect Success"
         return Response(
             {
@@ -38,7 +38,7 @@ class I18nViewSet(MainViewSet):
 
     authentication_classes = [SessionAuthenticate]
 
-    async def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         """
         Change Language
         """
@@ -56,6 +56,10 @@ class I18nViewSet(MainViewSet):
             lang_code,
             max_age=settings.SESSION_COOKIE_AGE,
             domain=settings.SESSION_COOKIE_DOMAIN,
+            path=settings.SESSION_COOKIE_PATH,
+            secure=settings.SESSION_COOKIE_SECURE or None,
+            httponly=settings.SESSION_COOKIE_HTTPONLY or None,
+            samesite=settings.SESSION_COOKIE_SAMESITE,
         )
         return response
 
@@ -68,7 +72,7 @@ class MetaConfigViewSet(MainViewSet):
     queryset = MetaConfig.get_queryset()
     authentication_classes = [SessionAuthenticate]
 
-    async def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         """
         Meta Config
         """
@@ -81,4 +85,4 @@ class MetaConfigViewSet(MainViewSet):
         if request_data:
             condition &= Q(**request_data)
 
-        return Response(await MetaConfig.as_map(condition))
+        return Response(MetaConfig.as_map(condition))

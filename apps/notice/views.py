@@ -1,4 +1,3 @@
-from channels.db import database_sync_to_async
 from django.shortcuts import get_object_or_404
 from ovinc_client.core.viewsets import MainViewSet
 from rest_framework.decorators import action
@@ -27,7 +26,7 @@ class NoticeViewSet(MainViewSet):
     throttle_classes = [AppRateThrottle]
 
     @action(methods=["POST"], detail=False)
-    async def mail(self, request, *args, **kwargs):
+    def mail(self, request, *args, **kwargs):
         """
         mail
         """
@@ -38,11 +37,11 @@ class NoticeViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # send
-        await NoticeBase.send_notice(NoticeWayChoices.MAIL, **request_data)
+        NoticeBase.send_notice(NoticeWayChoices.MAIL, **request_data)
         return Response()
 
     @action(methods=["POST"], detail=False)
-    async def sms(self, request, *args, **kwargs):
+    def sms(self, request, *args, **kwargs):
         """
         sms
         """
@@ -53,11 +52,11 @@ class NoticeViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # send
-        await NoticeBase.send_notice(NoticeWayChoices.MSG, **request_data)
+        NoticeBase.send_notice(NoticeWayChoices.MSG, **request_data)
         return Response()
 
     @action(methods=["POST"], detail=False)
-    async def robot(self, request, *args, **kwargs):
+    def robot(self, request, *args, **kwargs):
         """
         robot of Wecom or Feishu
         """
@@ -68,11 +67,11 @@ class NoticeViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # send
-        await NoticeBase.send_notice(NoticeWayChoices.ROBOT, **request_data)
+        NoticeBase.send_notice(NoticeWayChoices.ROBOT, **request_data)
         return Response()
 
     @action(methods=["POST"], detail=False)
-    async def registry_robot(self, request, *args, **kwargs):
+    def registry_robot(self, request, *args, **kwargs):
         """
         registry robot
         """
@@ -80,13 +79,13 @@ class NoticeViewSet(MainViewSet):
         # get instance
         instance = None
         if request.data.get("id"):
-            instance = await database_sync_to_async(get_object_or_404)(Robot, pk=request.data.pop("id"))
+            instance = get_object_or_404(Robot, pk=request.data.pop("id"))
 
         # validate request
         request_serializer = RegistryRobotSerializer(instance=instance, data=request.data, partial=bool(instance))
         request_serializer.is_valid(raise_exception=True)
 
         # save
-        await request_serializer.asave()
+        request_serializer.save()
 
-        return Response(await request_serializer.adata)
+        return Response(request_serializer.data)

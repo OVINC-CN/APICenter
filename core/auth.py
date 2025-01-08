@@ -1,4 +1,3 @@
-from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext
 from rest_framework.authentication import BaseAuthentication
@@ -22,7 +21,7 @@ class ApplicationAuthenticate(BaseAuthentication):
     """
 
     # pylint: disable=W0236
-    async def authenticate(self, request: Request) -> (Application, None):
+    def authenticate(self, request: Request) -> (Application, None):
         # load params
         app_code = request.headers.get(APP_AUTH_HEADER_APPID_KEY)
         signature = request.headers.get(APP_AUTH_HEADER_APPID_SIGN)
@@ -32,7 +31,7 @@ class ApplicationAuthenticate(BaseAuthentication):
             raise AppAuthFailed(gettext("App Auth Headers Not Exist"))
         # varify app
         try:
-            app = await database_sync_to_async(Application.objects.get)(pk=app_code)
+            app = Application.objects.get(pk=app_code)
         except Application.DoesNotExist as err:  # pylint: disable=E1101
             raise AppAuthFailed(gettext("App Not Exist")) from err
         # verify secret
