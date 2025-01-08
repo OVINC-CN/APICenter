@@ -1,4 +1,3 @@
-from channels.db import database_sync_to_async
 from django.conf import settings
 from django.utils.translation import gettext
 from ovinc_client.core.auth import SessionAuthenticate
@@ -19,7 +18,7 @@ class AuditCallbackViewSet(MainViewSet):
 
     authentication_classes = [SessionAuthenticate]
 
-    async def create(self, request: Request, *args, **kwargs) -> Response:
+    def create(self, request: Request, *args, **kwargs) -> Response:
         """
         callback
         """
@@ -27,7 +26,7 @@ class AuditCallbackViewSet(MainViewSet):
         req_slz = TCICallbackSerializer(data=request.data)
         req_slz.is_valid(raise_exception=True)
         # save
-        callback = await database_sync_to_async(AuditCallback.add_callback)(req_slz.validated_data)
+        callback = AuditCallback.add_callback(req_slz.validated_data)
         if callback.is_sensitive:
             send_notice.delay(
                 notice_type=NoticeWayChoices.ROBOT,

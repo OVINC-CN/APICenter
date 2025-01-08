@@ -23,11 +23,11 @@ class MailHandler(NoticeBase):
     def property_key(self) -> str:
         return "email_address"
 
-    async def _send(self) -> None:
+    def _send(self) -> None:
         connection = EmailBackend(
             host=self.host, port=self.port, username=self.username, password=self.password, use_ssl=True
         )
-        return send_mail(
+        send_mail(
             subject=self.content["title"],
             message=self.content["content"],
             from_email=self.username,

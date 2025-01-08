@@ -1,5 +1,5 @@
-from adrf.serializers import ModelSerializer
 from django.contrib.auth import get_user_model
+from rest_framework.serializers import ModelSerializer
 
 from apps.account.models import User
 from apps.application.models import Application

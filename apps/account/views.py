@@ -3,7 +3,6 @@ import json
 from json import JSONDecodeError
 
 import httpx
-from channels.db import database_sync_to_async
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import get_user_model
@@ -53,13 +52,13 @@ class UserInfoViewSet(MainViewSet):
     queryset = USER_MODEL.get_queryset()
     serializer_class = UserInfoSerializer
 
-    async def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs):
         """
         Get User Info
         """
 
         serializer = self.serializer_class(instance=request.user)
-        return Response(await serializer.adata)
+        return Response(serializer.data)
 
 
 class UserSignViewSet(MainViewSet):
@@ -70,7 +69,7 @@ class UserSignViewSet(MainViewSet):
     queryset = USER_MODEL.get_queryset()
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def sign_in(self, request, *args, **kwargs):
+    def sign_in(self, request, *args, **kwargs):
         """
         Sign in
         """
@@ -81,16 +80,16 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # login
-        user: User = await database_sync_to_async(auth.authenticate)(request, **request_data)
+        user: User = auth.authenticate(request, **request_data)
         if not user:
             raise WrongSignInParam()
 
         # bind wechat
         if request_data.get("wechat_code"):
-            await self.update_user_by_wechat(user, request_data["wechat_code"])
+            self.update_user_by_wechat(user, request_data["wechat_code"])
 
         # auth session
-        await database_sync_to_async(auth.login)(request, user)
+        auth.login(request, user)
 
         # oauth
         if request_data["is_oauth"]:
@@ -99,27 +98,27 @@ class UserSignViewSet(MainViewSet):
         return Response()
 
     @action(methods=["GET"], detail=False)
-    async def sign_out(self, request, *args, **kwargs):
+    def sign_out(self, request, *args, **kwargs):
         """
         Sign out
         """
 
-        await database_sync_to_async(auth.logout)(request)
+        auth.logout(request)
         return Response()
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def sign_up(self, request, *args, **kwargs):
+    def sign_up(self, request, *args, **kwargs):
         """
         sign up
         """
 
         # validate request
         request_serializer = UserRegistrySerializer(data=request.data, context={"user_ip": get_ip(request)})
-        await database_sync_to_async(request_serializer.is_valid)(raise_exception=True)
+        request_serializer.is_valid(raise_exception=True)
         request_data = request_serializer.validated_data
 
         # save
-        user = await database_sync_to_async(USER_MODEL.objects.create_user)(
+        user = USER_MODEL.objects.create_user(
             last_login=datetime.datetime.now(),
             username=request_data["username"],
             password=request_data["password"],
@@ -129,10 +128,10 @@ class UserSignViewSet(MainViewSet):
 
         # bind wechat
         if request_data.get("wechat_code"):
-            await self.update_user_by_wechat(user, request_data["wechat_code"])
+            self.update_user_by_wechat(user, request_data["wechat_code"])
 
         # login session
-        await database_sync_to_async(auth.login)(request, user)
+        auth.login(request, user)
 
         # oauth
         if request_data["is_oauth"]:
@@ -147,7 +146,7 @@ class UserSignViewSet(MainViewSet):
         authentication_classes=[SessionAuthenticate],
         throttle_classes=[SMSRateThrottle, IPRateThrottle],
     )
-    async def phone_verify_code(self, request, *args, **kwargs):
+    def phone_verify_code(self, request, *args, **kwargs):
         """
         send verify code
         """
@@ -164,7 +163,7 @@ class UserSignViewSet(MainViewSet):
         return Response()
 
     @action(methods=["GET"], detail=False)
-    async def oauth_code(self, request, *args, **kwargs):
+    def oauth_code(self, request, *args, **kwargs):
         """
         oauth code
         """
@@ -172,7 +171,7 @@ class UserSignViewSet(MainViewSet):
         return Response({"code": request.user.generate_oauth_code()})
 
     @action(methods=["POST"], detail=False, authentication_classes=[ApplicationAuthenticate])
-    async def verify_code(self, request, *args, **kwargs):
+    def verify_code(self, request, *args, **kwargs):
         """
         verify oauth code
         """
@@ -183,13 +182,13 @@ class UserSignViewSet(MainViewSet):
         request_data = request_serializer.validated_data
 
         # load user
-        is_success, user = await database_sync_to_async(USER_MODEL.check_oauth_code)(request_data["code"])
+        is_success, user = USER_MODEL.check_oauth_code(request_data["code"])
         if is_success:
-            return Response(await UserInfoSerializer(instance=user).adata)
+            return Response(UserInfoSerializer(instance=user).data)
         raise WrongToken()
 
     @action(methods=["GET"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def wechat_config(self, request, *args, **kwargs):
+    def wechat_config(self, request, *args, **kwargs):
         """
         WeChat Config
         """
@@ -209,7 +208,7 @@ class UserSignViewSet(MainViewSet):
 
     # pylint: disable=R0914
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def wechat_login(self, request, *args, **kwargs):
+    def wechat_login(self, request, *args, **kwargs):
         """
         WeChat Login
         """
@@ -241,15 +240,15 @@ class UserSignViewSet(MainViewSet):
             f"&code={request_data['code']}"
             f"&grant_type={WeChatAuthType.CODE}"
         )
-        client = httpx.AsyncClient()
+        client = httpx.Client()
         try:
-            resp = await client.get(url)
+            resp = client.get(url)
             access_info = resp.json()
         except Exception as err:
             logger.exception("[CallWeChatAPIFailed] %s %s", url, err)
             raise WeChatLoginFailed() from err
         finally:
-            await client.aclose()
+            client.close()
 
         if "openid" not in access_info:
             logger.error("[WeChatLoginFailed] %s", access_info)
@@ -259,31 +258,31 @@ class UserSignViewSet(MainViewSet):
         url = (
             f"{settings.WECHAT_USER_INFO_API}?access_token={access_info['access_token']}&openid={access_info['openid']}"
         )
-        client = httpx.AsyncClient()
+        client = httpx.Client()
         try:
-            resp = await client.get(url)
+            resp = client.get(url)
             user_info = resp.json()
         except Exception as err:
             logger.exception("[CallWeChatAPIFailed] %s", url, err)
             raise WeChatLoginFailed() from err
         finally:
-            await client.aclose()
+            client.close()
 
         code = uniq_id()
         cache_key = WECHAT_USER_INFO_KEY.format(code=code)
         cache.set(cache_key, json.dumps(user_info, ensure_ascii=False), timeout=settings.WECHAT_SCOPE_TIMEOUT)
 
         # load user
-        user: User = await database_sync_to_async(USER_MODEL.load_user_by_union_id)(union_id=user_info["unionid"])
+        user: User = USER_MODEL.load_user_by_union_id(union_id=user_info["unionid"])
         if user:
-            await self.update_user_by_wechat(user, code)
-            await database_sync_to_async(auth.login)(request, user)
+            self.update_user_by_wechat(user, code)
+            auth.login(request, user)
             return Response({"code": user.generate_oauth_code() if request_data["is_oauth"] else ""})
 
         # need registry
         return Response({"wechat_code": code})
 
-    async def update_user_by_wechat(self, user: User, wechat_code: str) -> None:
+    def update_user_by_wechat(self, user: User, wechat_code: str) -> None:
         """
         Update User Info By WeChat
         """
@@ -299,10 +298,10 @@ class UserSignViewSet(MainViewSet):
         user.wechat_union_id = user_info["unionid"]
         user.wechat_open_id = user_info["openid"]
         user.avatar = user_info["headimgurl"]
-        await database_sync_to_async(user.save)(update_fields=["wechat_union_id", "wechat_open_id", "avatar"])
+        user.save(update_fields=["wechat_union_id", "wechat_open_id", "avatar"])
 
     @action(methods=["POST"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def reset_password(self, request, *args, **kwargs) -> Response:
+    def reset_password(self, request, *args, **kwargs) -> Response:
         """
         Reset Password
         """
@@ -314,19 +313,19 @@ class UserSignViewSet(MainViewSet):
 
         # load user
         try:
-            user: User = await database_sync_to_async(USER_MODEL.objects.get)(
+            user: User = USER_MODEL.objects.get(
                 username=request_data["username"], phone_number=request_data["phone_number"]
             )
         except USER_MODEL.DoesNotExist as err:
             raise UserNotExist() from err
 
         # set new password
-        await database_sync_to_async(user.reset_password)(request_data["password"])
+        user.reset_password(request_data["password"])
 
         return Response()
 
     @action(methods=["GET"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def phone_areas(self, request, *args, **kwargs) -> Response:
+    def phone_areas(self, request, *args, **kwargs) -> Response:
         """
         Phone Number Areas
         """

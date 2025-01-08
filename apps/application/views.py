@@ -23,7 +23,7 @@ class ApplicationViewSet(MainViewSet):
     serializer_class = ApplicationSerializer
 
     @action(methods=["GET"], detail=False, authentication_classes=[SessionAuthenticate])
-    async def all(self, request, *args, **kwargs):
+    def all(self, request, *args, **kwargs):
         """
         list all applications
         """
@@ -33,4 +33,4 @@ class ApplicationViewSet(MainViewSet):
 
         # response
         serializer = ApplicationListSerializer(queryset, many=True)
-        return Response(await serializer.adata)
+        return Response(serializer.data)

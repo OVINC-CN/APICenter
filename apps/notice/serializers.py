@@ -1,4 +1,3 @@
-from adrf.serializers import ModelSerializer, Serializer
 from django.conf import settings
 from django.utils.translation import gettext_lazy
 from rest_framework import serializers
@@ -6,7 +5,7 @@ from rest_framework import serializers
 from apps.notice.models import Robot
 
 
-class NoticeRequestSerializer(Serializer):
+class NoticeRequestSerializer(serializers.Serializer):
     """
     Notice Base
     """
@@ -17,7 +16,7 @@ class NoticeRequestSerializer(Serializer):
     content = serializers.JSONField(label=gettext_lazy("Content"))
 
 
-class MailContentSerializer(Serializer):
+class MailContentSerializer(serializers.Serializer):
     """
     Mail Content
     """
@@ -34,7 +33,7 @@ class MailRequestSerialzier(NoticeRequestSerializer):
     content = MailContentSerializer(label=gettext_lazy("Content"))
 
 
-class SmsContentSerializer(Serializer):
+class SmsContentSerializer(serializers.Serializer):
     """
     SMS Content
     """
@@ -51,7 +50,7 @@ class SmsRequestSerializer(NoticeRequestSerializer):
     content = SmsContentSerializer(label=gettext_lazy("Content"))
 
 
-class RegistryRobotSerializer(ModelSerializer):
+class RegistryRobotSerializer(serializers.ModelSerializer):
     """
     registry robot
     """
@@ -61,7 +60,7 @@ class RegistryRobotSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class RobotRequestSerializer(Serializer):
+class RobotRequestSerializer(serializers.Serializer):
     """
     Robot
     """

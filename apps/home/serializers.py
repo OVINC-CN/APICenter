@@ -1,11 +1,10 @@
-from adrf.serializers import Serializer
 from django.utils.translation import check_for_language, gettext_lazy
 from rest_framework import serializers
 
 from apps.home.exceptions import LanguageCodeInvalid
 
 
-class I18nRequestSerializer(Serializer):
+class I18nRequestSerializer(serializers.Serializer):
     """
     I18n
     """
@@ -18,7 +17,7 @@ class I18nRequestSerializer(Serializer):
         raise LanguageCodeInvalid()
 
 
-class MetaConfigQuerySerializer(Serializer):
+class MetaConfigQuerySerializer(serializers.Serializer):
     """
     MetaConfig
     """
