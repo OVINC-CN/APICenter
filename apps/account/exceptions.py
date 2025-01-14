@@ -46,3 +46,8 @@ class OriginPasswordInvalid(APIException):
 class PhoneVerifyCodeInvalid(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = gettext_lazy("Phone Verify Code Invalid")
+
+
+class RegistryLocked(APIException):
+    status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    default_detail = gettext_lazy("Registry Disabled")
