@@ -21,6 +21,7 @@ from apps.account.constants import (
     WeChatAuthType,
 )
 from apps.account.exceptions import (
+    RegistryLocked,
     StateInvalid,
     UserNotExist,
     WeChatLoginFailed,
@@ -38,6 +39,8 @@ from apps.account.serializers import (
     VerifyCodeRequestSerializer,
     WeChatLoginReqSerializer,
 )
+from apps.home.constants import BuildInKeys
+from apps.home.models import MetaConfig
 from core.auth import ApplicationAuthenticate
 from core.utils import is_wechat
 
@@ -111,6 +114,11 @@ class UserSignViewSet(MainViewSet):
         """
         sign up
         """
+
+        # check registry locked
+        registry_lock_config: MetaConfig | None = MetaConfig.objects.filter(key=BuildInKeys.REGISTRY_LOCKED[0]).first()
+        if registry_lock_config and registry_lock_config.val:
+            raise RegistryLocked()
 
         # validate request
         request_serializer = UserRegistrySerializer(data=request.data, context={"user_ip": get_ip(request)})

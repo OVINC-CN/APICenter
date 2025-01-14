@@ -31,3 +31,4 @@ class BuildInKeys:
     PRIVACY_AGREEMENT: CONFIG_DEFAULT_T = "privacy_agreement", ""
     BACKGROUND_IMAGE: CONFIG_DEFAULT_T = "background_image", ""
     USERNAME_EXTRA_REGEX: CONFIG_DEFAULT_T = "username_extra_regex", ""
+    REGISTRY_LOCKED: CONFIG_DEFAULT_T = "registry_locked", ""
