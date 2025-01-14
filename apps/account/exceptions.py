@@ -49,5 +49,5 @@ class PhoneVerifyCodeInvalid(APIException):
 
 
 class RegistryLocked(APIException):
-    status_code = status.HTTP_406_NOT_ACCEPTABLE
+    status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     default_detail = gettext_lazy("Registry Disabled")
