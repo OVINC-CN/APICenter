@@ -1,12 +1,14 @@
 import datetime
 import json
 from json import JSONDecodeError
+from urllib.parse import quote
 
 import httpx
 from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.http import HttpResponseRedirect
 from ovinc_client.core.auth import SessionAuthenticate
 from ovinc_client.core.logger import logger
 from ovinc_client.core.utils import get_ip, uniq_id
@@ -31,6 +33,7 @@ from apps.account.exceptions import (
 from apps.account.models import User
 from apps.account.rates import IPRateThrottle, SMSRateThrottle
 from apps.account.serializers import (
+    OIDCLoginRequestSerializer,
     ResetPasswordRequestSerializer,
     SendVerifyCodeRequestSerializer,
     SignInSerializer,
@@ -339,3 +342,15 @@ class UserSignViewSet(MainViewSet):
         """
 
         return Response(data=[{"value": value, "label": str(label)} for value, label in PhoneNumberAreas.choices])
+
+    @action(methods=["GET"], detail=False, authentication_classes=[SessionAuthenticate])
+    def oidc_login(self, request, *args, **kwargs) -> HttpResponseRedirect:
+        """
+        OIDC Login, Redirect to Login Page
+        """
+
+        req_slz = OIDCLoginRequestSerializer(data=request.query_params)
+        req_slz.is_valid(raise_exception=True)
+        req_data = req_slz.validated_data
+        next_url = quote(settings.BACKEND_URL + req_data["next"])
+        return HttpResponseRedirect(redirect_to=f"{settings.FRONTEND_URL}/login/?next={next_url}")

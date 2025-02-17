@@ -22,3 +22,6 @@ pycryptodome==3.21.0
 
 # tencent cloud
 tencentcloud-sdk-python==3.0.1282
+
+# oidc
+django-oidc-provider==0.8.3

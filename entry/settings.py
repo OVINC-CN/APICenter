@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "sslserver",
+    "oidc_provider",
     "apps.account",
     "apps.application",
     "apps.cel",
@@ -253,3 +254,11 @@ CAPTCHA_ENABLED = strtobool(os.getenv("CAPTCHA_ENABLED", "False"))
 CAPTCHA_APP_ID = int(os.getenv("CAPTCHA_APP_ID", "0"))
 CAPTCHA_APP_SECRET = os.getenv("CAPTCHA_APP_SECRET", "")
 CAPTCHA_APP_INFO_TIMEOUT = int(os.getenv("CAPTCHA_APP_INFO_TIMEOUT", str(60 * 10)))
+
+# OIDC
+OIDC_USERINFO = "apps.account.utils.userinfo"
+OIDC_IDTOKEN_SUB_GENERATOR = "apps.account.utils.default_sub_generator"
+OIDC_IDTOKEN_INCLUDE_CLAIMS = strtobool(os.getenv("OIDC_IDTOKEN_INCLUDE_CLAIMS", "True"))
+OIDC_LOGIN_URL = "/account/oidc_login/"
+OIDC_CODE_EXPIRE = int(os.getenv("OIDC_CODE_EXPIRE", "600"))
+OIDC_IDTOKEN_EXPIRE = int(os.getenv("OIDC_IDTOKEN_EXPIRE", "600"))
