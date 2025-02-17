@@ -21,6 +21,7 @@ urlpatterns = [
     re_path(r"^static/(?P<path>.*)$", serve_static, name="static"),
     path("admin/login/", RedirectView.as_view(url=ADMIN_PAGE_LOGIN_URL.replace("%", "%%"))),
     path("admin/", admin.site.urls),
+    path("openid/", include("oidc_provider.urls", namespace="oidc_provider")),
     path("", include("apps.home.urls")),
     path("account/", include("apps.account.urls")),
     path("application/", include("apps.application.urls")),

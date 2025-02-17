@@ -161,3 +161,11 @@ class SendVerifyCodeRequestSerializer(serializers.Serializer):
         if not TCaptchaVerify(user_ip=self.context.get("user_ip", ""), **data.get("tcaptcha", {})).verify():
             raise TCaptchaInvalid()
         return data
+
+
+class OIDCLoginRequestSerializer(serializers.Serializer):
+    """
+    OIDC Login
+    """
+
+    next = serializers.CharField(label=gettext_lazy("Next"))
