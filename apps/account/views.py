@@ -1,7 +1,7 @@
 import datetime
 import json
 from json import JSONDecodeError
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 import httpx
 from django.conf import settings
@@ -135,6 +135,7 @@ class UserSignViewSet(MainViewSet):
             password=request_data["password"],
             nick_name=request_data["nick_name"],
             phone_number=request_data["phone_number"],
+            email_address=f"{request_data["username"]}@{urlparse(settings.BACKEND_URL).hostname}",
         )
 
         # bind wechat
