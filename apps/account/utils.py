@@ -6,6 +6,7 @@ def userinfo(claims, user):
         {
             "name": user.username,
             "nickname": user.nick_name,
+            "preferred_username": user.username,
             "updated_at": user.last_login.strftime(api_settings.DATETIME_FORMAT),
             "email": user.email_address,
         }
