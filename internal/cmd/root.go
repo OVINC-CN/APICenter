@@ -22,9 +22,9 @@ var rootCmd = &cobra.Command{
 			case "api":
 				apiCmd.Run(apiCmd, args)
 			case "worker":
-				workerCmd.Run(apiCmd, args)
+				workerCmd.Run(workerCmd, args)
 			case "beat":
-				beatCmd.Run(apiCmd, args)
+				beatCmd.Run(beatCmd, args)
 			default:
 				log.Fatal("[CMD] unknown app mode")
 			}
