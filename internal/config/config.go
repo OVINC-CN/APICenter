@@ -16,7 +16,7 @@ func init() {
 		Cron: cronConfig{
 			WorkerConcurrency:     configUtils.GetConfigInt("APP_CRON_WORKER_CONCURRENCY", 1),
 			WorkerQueues:          configUtils.GetConfigStruct("APP_CRON_WORKER_QUEUES", "{}", make(map[string]int)),
-			WorkerShutDownTimeout: time.Duration(configUtils.GetConfigUint64("APP_CRON_WORKER_SHUTDOWN_TIMEOUT", 60)) * time.Second,
+			WorkerShutDownTimeout: time.Duration(configUtils.GetConfigInt64("APP_CRON_WORKER_SHUTDOWN_TIMEOUT", 60)) * time.Second,
 		},
 	}
 }
