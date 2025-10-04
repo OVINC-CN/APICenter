@@ -1,4 +1,4 @@
-package configUtils
+package cfg
 
 import (
 	"log"
@@ -36,7 +36,38 @@ var (
 	}
 )
 
-// db
+// mysql
+var (
+	MySQLUsername = func() string {
+		return GetConfigVal("APP_MYSQL_USERNAME", "root")
+	}
+	MySQLPassword = func() string {
+		return GetConfigVal("APP_MYSQL_PASSWORD", "")
+	}
+	MySQLHost = func() string {
+		return GetConfigVal("APP_MYSQL_HOST", "127.0.0.1")
+	}
+	MySQLPort = func() int {
+		return GetConfigInt("APP_MYSQL_PORT", 3306)
+	}
+	MySQLDatabase = func() string {
+		return GetConfigVal("APP_MYSQL_DATABASE", "api_center")
+	}
+	MySQLParams = func() string {
+		return GetConfigVal("APP_MYSQL_CONNECT_ARGS", "charset=utf8mb4&parseTime=True&loc=UTC")
+	}
+	MySQLMaxOpenConns = func() int {
+		return GetConfigInt("APP_MYSQL_MAX_OPEN_CONNS", 100)
+	}
+	MySQLMaxIdleConns = func() int {
+		return GetConfigInt("APP_MYSQL_MAX_IDLE_CONNS", 10)
+	}
+	MySQLConnMaxLifetime = func() time.Duration {
+		return time.Duration(GetConfigInt("APP_MYSQL_CONN_MAX_LIFETIME", 3600)) * time.Second
+	}
+)
+
+// redis
 var (
 	RedisAddr = func() string {
 		return GetConfigVal("APP_REDIS_ADDR", "127.0.0.1:6379")

@@ -6,13 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ovinc-cn/apicenter/v2/internal/apps/home"
 	"github.com/ovinc-cn/apicenter/v2/internal/config"
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
-	"github.com/ovinc-cn/apicenter/v2/pkg/ginUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/apiMixin"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 )
 
 func Serve() {
 	// release mode
-	if configUtils.AppDebug() {
+	if cfg.AppDebug() {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -22,7 +22,7 @@ func Serve() {
 	r := gin.New()
 
 	// middlewares
-	r.Use(gin.Recovery(), ginUtils.ObserveMiddleware())
+	r.Use(gin.Recovery(), apiMixin.ObserveMiddleware())
 
 	// routers
 	apiV1Group := r.Group("/v1")

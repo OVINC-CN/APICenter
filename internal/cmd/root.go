@@ -6,7 +6,7 @@ import (
 
 	"github.com/ovinc-cn/apicenter/v2/internal/crond"
 	"github.com/ovinc-cn/apicenter/v2/internal/version"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +25,8 @@ var rootCmd = &cobra.Command{
 				workerCmd.Run(workerCmd, args)
 			case "beat":
 				beatCmd.Run(beatCmd, args)
+			case "migrate":
+				migrateCmd.Run(migrateCmd, args)
 			default:
 				log.Fatal("[CMD] unknown app mode")
 			}
@@ -34,7 +36,7 @@ var rootCmd = &cobra.Command{
 	},
 	PostRun: func(cmd *cobra.Command, args []string) {
 		_ = crond.AsyncClient.Close()
-		traceUtils.OnExit()
+		trace.OnExit()
 		os.Exit(0)
 	},
 }

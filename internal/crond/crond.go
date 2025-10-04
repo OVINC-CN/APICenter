@@ -4,14 +4,14 @@ import (
 	"log"
 
 	"github.com/hibiken/asynq"
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 )
 
 var AsyncClient *asynq.Client
 var RedisClientOption = asynq.RedisClientOpt{
-	Addr:     configUtils.RedisAddr(),
-	Password: configUtils.RedisPassword(),
-	DB:       configUtils.RedisDB(),
+	Addr:     cfg.RedisAddr(),
+	Password: cfg.RedisPassword(),
+	DB:       cfg.RedisDB(),
 }
 
 func init() {

@@ -1,4 +1,4 @@
-package configUtils
+package cfg
 
 import (
 	"encoding/json"

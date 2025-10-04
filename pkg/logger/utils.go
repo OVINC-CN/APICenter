@@ -4,12 +4,12 @@ import (
 	"log"
 	"strings"
 
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 	"go.uber.org/zap"
 )
 
 func LogLevel() zap.AtomicLevel {
-	level := strings.ToUpper(configUtils.AppLogLevel())
+	level := strings.ToUpper(cfg.AppLogLevel())
 	switch level {
 	case "DEBUG":
 		return zap.NewAtomicLevelAt(zap.DebugLevel)

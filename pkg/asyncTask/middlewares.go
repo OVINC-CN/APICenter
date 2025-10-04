@@ -1,4 +1,4 @@
-package crond
+package asyncTask
 
 import (
 	"context"
@@ -7,11 +7,10 @@ import (
 	"runtime"
 
 	"github.com/hibiken/asynq"
-	"github.com/ovinc-cn/apicenter/v2/pkg/commonUtils"
 	"github.com/ovinc-cn/apicenter/v2/pkg/logger"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
+	"github.com/ovinc-cn/apicenter/v2/pkg/utils"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type ScheduleTaskFailed struct {
@@ -29,7 +28,7 @@ func ObserveMiddleware(next asynq.Handler) asynq.Handler {
 		var payload TaskPayload
 		if err := json.Unmarshal(task.Payload(), &payload); err != nil {
 			logger.Logger(ctx).Error(
-				fmt.Sprintf("[%s] failed\npayload: %s\nerr: %s", task.Type(), commonUtils.ForceStringMaxLength(task.Payload()), err),
+				fmt.Sprintf("[%s] failed\npayload: %s\nerr: %s", task.Type(), utils.ForceStringMaxLength(task.Payload()), err),
 			)
 			return err
 		}
@@ -40,7 +39,7 @@ func ObserveMiddleware(next asynq.Handler) asynq.Handler {
 		}
 
 		// span
-		ctx, span := traceUtils.StartSpan(ctx, fmt.Sprintf("ObserveTask#%s", task.Type()), trace.SpanKindInternal)
+		ctx, span := trace.StartSpan(ctx, fmt.Sprintf("ObserveTask#%s", task.Type()), trace.SpanKindInternal)
 		defer span.End()
 
 		// pre exec
@@ -52,7 +51,7 @@ func ObserveMiddleware(next asynq.Handler) asynq.Handler {
 		// post exec
 		if err != nil {
 			logger.Logger(ctx).Error(
-				fmt.Sprintf("[%s] failed\npayload: %s\nerr: %s", task.Type(), commonUtils.ForceStringMaxLength(task.Payload()), err),
+				fmt.Sprintf("[%s] failed\npayload: %s\nerr: %s", task.Type(), utils.ForceStringMaxLength(task.Payload()), err),
 			)
 		} else {
 			logger.Logger(ctx).Info(fmt.Sprintf("[%s] finished", task.Type()))
@@ -65,7 +64,7 @@ func RecoverMiddleware(next asynq.Handler) asynq.Handler {
 	return asynq.HandlerFunc(func(ctx context.Context, task *asynq.Task) (err error) {
 		defer func() {
 			if r := recover(); r != nil {
-				ctx, span := traceUtils.StartSpan(ctx, fmt.Sprintf("Task#%s#Panic", task.Type()), trace.SpanKindInternal)
+				ctx, span := trace.StartSpan(ctx, fmt.Sprintf("Task#%s#Panic", task.Type()), trace.SpanKindInternal)
 				defer span.End()
 
 				var stack []byte
@@ -75,7 +74,7 @@ func RecoverMiddleware(next asynq.Handler) asynq.Handler {
 				stack = stack[:length]
 
 				logger.Logger(ctx).Error(
-					fmt.Sprintf("[%s] panic\nerr: %s\n%s", task.Type(), commonUtils.ForceStringMaxLength(r), stack),
+					fmt.Sprintf("[%s] panic\nerr: %s\n%s", task.Type(), utils.ForceStringMaxLength(r), stack),
 				)
 			}
 		}()

@@ -6,7 +6,7 @@ import (
 
 	"github.com/hibiken/asynq"
 	"github.com/ovinc-cn/apicenter/v2/internal/crond"
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 )
 
 type taskConfig struct {
@@ -25,7 +25,7 @@ var periodTasks = []taskConfig{
 
 func Serve() {
 	// init beat
-	scheduler := asynq.NewScheduler(crond.RedisClientOption, &asynq.SchedulerOpts{Location: configUtils.AppTimezone()})
+	scheduler := asynq.NewScheduler(crond.RedisClientOption, &asynq.SchedulerOpts{Location: cfg.AppTimezone()})
 
 	// register task
 	for _, periodTask := range periodTasks {

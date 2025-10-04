@@ -1,10 +1,10 @@
-package redisUtils
+package redis
 
 import (
 	"context"
 	"log"
 
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -14,12 +14,12 @@ func init() {
 	// init client
 	rdb = redis.NewClient(
 		&redis.Options{
-			Addr:     configUtils.RedisAddr(),
-			Password: configUtils.RedisPassword(),
-			DB:       configUtils.RedisDB(),
+			Addr:     cfg.RedisAddr(),
+			Password: cfg.RedisPassword(),
+			DB:       cfg.RedisDB(),
 		},
 	)
-	if err := rdb.Ping(context.Background()).Err(); err != nil {
+	if err := Ping(context.Background(), rdb); err != nil {
 		log.Fatalf("[RedisClient] failed to ping; %s", err)
 	}
 

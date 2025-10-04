@@ -1,4 +1,4 @@
-package ginUtils
+package apiMixin
 
 type APIError struct {
 	Code int

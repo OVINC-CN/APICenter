@@ -1,17 +1,17 @@
-package ginUtils
+package apiMixin
 
 import (
 	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
 )
 
 func Response(c *gin.Context, status int, msg string, data interface{}) {
 	// load context
 	ctx := c.MustGet(TraceContextKey).(context.Context)
-	span := traceUtils.SpanFromContext(ctx)
+	span := trace.SpanFromContext(ctx)
 	traceID := span.SpanContext().TraceID().String()
 
 	// response

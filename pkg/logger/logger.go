@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	configUtils "github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -16,8 +16,8 @@ func init() {
 	var err error
 	config := zap.Config{
 		Level:       LogLevel(),
-		Development: configUtils.AppDebug(),
-		Encoding:    configUtils.AppLogEncoding(),
+		Development: cfg.AppDebug(),
+		Encoding:    cfg.AppLogEncoding(),
 		EncoderConfig: zapcore.EncoderConfig{
 			MessageKey:     "message",
 			LevelKey:       "level",
@@ -31,7 +31,7 @@ func init() {
 			EncodeCaller:   zapcore.FullCallerEncoder,
 			EncodeName:     zapcore.FullNameEncoder,
 		},
-		OutputPaths: []string{configUtils.AppLogOutput()},
+		OutputPaths: []string{cfg.AppLogOutput()},
 	}
 	if logger, err = config.Build(); err != nil {
 		log.Fatalf("[Logger] init failed; %s", err)
@@ -39,7 +39,7 @@ func init() {
 }
 
 func Logger(ctx context.Context) *zap.Logger {
-	span := traceUtils.SpanFromContext(ctx)
+	span := trace.SpanFromContext(ctx)
 	spanCtx := span.SpanContext()
 	return logger.With(
 		zap.String("trace_id", spanCtx.TraceID().String()),

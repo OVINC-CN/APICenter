@@ -7,22 +7,22 @@ import (
 	"fmt"
 
 	"github.com/hibiken/asynq"
-	"github.com/ovinc-cn/apicenter/v2/pkg/commonUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/asyncTask"
 	"github.com/ovinc-cn/apicenter/v2/pkg/logger"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
+	"github.com/ovinc-cn/apicenter/v2/pkg/utils"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func NewTask(ctx context.Context, taskType TaskType, data interface{}, customOps ...asynq.Option) (*asynq.Task, error) {
 	// init trace
-	ctx, span := traceUtils.StartSpan(ctx, fmt.Sprintf("NewTask#%s", taskType), trace.SpanKindInternal)
+	ctx, span := trace.StartSpan(ctx, fmt.Sprintf("NewTask#%s", taskType), trace.SpanKindInternal)
 	defer span.End()
 
 	// init payload
-	payload := TaskPayload{Carrier: propagation.MapCarrier{}, Data: data}
+	payload := asyncTask.TaskPayload{Carrier: propagation.MapCarrier{}, Data: data}
 
 	// inject carrier
 	otel.GetTextMapPropagator().Inject(ctx, payload.Carrier)
@@ -47,7 +47,7 @@ func NewTask(ctx context.Context, taskType TaskType, data interface{}, customOps
 
 func RunAsyncTask(ctx context.Context, taskType TaskType, data interface{}, ops ...asynq.Option) error {
 	// trace
-	ctx, span := traceUtils.StartSpan(ctx, fmt.Sprintf("RunAsyncTask#%s", taskType), trace.SpanKindProducer)
+	ctx, span := trace.StartSpan(ctx, fmt.Sprintf("RunAsyncTask#%s", taskType), trace.SpanKindProducer)
 	defer span.End()
 
 	// init task
@@ -67,6 +67,6 @@ func RunAsyncTask(ctx context.Context, taskType TaskType, data interface{}, ops 
 		logger.Logger(ctx).Error(fmt.Sprintf("[RunAsyncTask] enqueue %s task failed\nerr: %s", taskType, err))
 		return err
 	}
-	logger.Logger(ctx).Info(fmt.Sprintf("[RunAsyncTask] enqueue %s task success\ntask: %s", taskType, commonUtils.ForceStringMaxLength(taskInfo)))
+	logger.Logger(ctx).Info(fmt.Sprintf("[RunAsyncTask] enqueue %s task success\ntask: %s", taskType, utils.ForceStringMaxLength(taskInfo)))
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/ovinc-cn/apicenter/v2/internal/apps/home"
 	"github.com/ovinc-cn/apicenter/v2/internal/config"
 	"github.com/ovinc-cn/apicenter/v2/internal/crond"
+	"github.com/ovinc-cn/apicenter/v2/pkg/asyncTask"
 )
 
 func Serve() {
@@ -22,7 +23,7 @@ func Serve() {
 
 	// init
 	mux := asynq.NewServeMux()
-	mux.Use(crond.RecoverMiddleware, crond.ObserveMiddleware)
+	mux.Use(asyncTask.RecoverMiddleware, asyncTask.ObserveMiddleware)
 
 	// home
 	mux.HandleFunc(crond.TaskTypeDebug, home.DebugTask)

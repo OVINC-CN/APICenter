@@ -1,4 +1,4 @@
-package traceUtils
+package trace
 
 import (
 	"context"

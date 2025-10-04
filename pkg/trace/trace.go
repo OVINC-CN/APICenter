@@ -1,4 +1,4 @@
-package traceUtils
+package trace
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ovinc-cn/apicenter/v2/pkg/configUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
@@ -31,14 +31,14 @@ func init() {
 
 	// resource
 	r, err := resource.New(ctx, resource.WithAttributes(
-		semconv.ServiceName(fmt.Sprintf("%s-%s", configUtils.AppName(), processName))),
+		semconv.ServiceName(fmt.Sprintf("%s-%s", cfg.AppName(), processName))),
 	)
 	if err != nil {
 		log.Fatalf("[Trace] create resource failed; %s", err)
 	}
 
 	// init exporter
-	e, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint(configUtils.TraceEndpoint()), otlptracegrpc.WithInsecure())
+	e, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint(cfg.TraceEndpoint()), otlptracegrpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("[Trace] create otlp grpc exporter failed; %s", err)
 	}
@@ -49,7 +49,7 @@ func init() {
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
 	// init tracer
-	tracer = otel.Tracer(configUtils.AppName())
+	tracer = otel.Tracer(cfg.AppName())
 }
 
 func OnExit() {

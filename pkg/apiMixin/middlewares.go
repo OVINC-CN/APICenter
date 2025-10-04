@@ -1,4 +1,4 @@
-package ginUtils
+package apiMixin
 
 import (
 	"context"
@@ -8,11 +8,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ovinc-cn/apicenter/v2/pkg/logger"
-	"github.com/ovinc-cn/apicenter/v2/pkg/traceUtils"
+	"github.com/ovinc-cn/apicenter/v2/pkg/trace"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
-	"go.opentelemetry.io/otel/trace"
 )
 
 func ObserveMiddleware() gin.HandlerFunc {
@@ -24,7 +23,7 @@ func ObserveMiddleware() gin.HandlerFunc {
 		}
 
 		// init trace
-		ctx, span := traceUtils.StartSpan(context.Background(), fmt.Sprintf("Router#%s#%s", c.Request.Method, path), trace.SpanKindServer)
+		ctx, span := trace.StartSpan(context.Background(), fmt.Sprintf("Router#%s#%s", c.Request.Method, path), trace.SpanKindServer)
 		defer span.End()
 
 		// add trace to context
@@ -48,7 +47,7 @@ func ObserveMiddleware() gin.HandlerFunc {
 		// add attributes
 		span.SetAttributes(
 			semconv.HTTPResponseStatusCode(status),
-			attribute.Int(traceUtils.AttributeStatusCode, status),
+			attribute.Int(trace.AttributeStatusCode, status),
 		)
 
 		// log
