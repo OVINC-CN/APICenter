@@ -16,5 +16,5 @@ var RedisClientOption = asynq.RedisClientOpt{
 
 func init() {
 	AsyncClient = asynq.NewClient(RedisClientOption)
-	log.Printf("[AsyncClinet] init success\n")
+	log.Printf("[AsyncClient] init success\n")
 }
