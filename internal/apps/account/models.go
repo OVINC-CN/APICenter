@@ -29,7 +29,13 @@ type User struct {
 }
 
 func (u *User) ExactByUsername(ctx context.Context, username string) error {
-	return mysql.Select(ctx, mysql.DB(), u, "username = ?", username)
+	if err := mysql.Select(ctx, mysql.DB(), u, "username = ?", username); err != nil {
+		return err
+	}
+	if u.ID == 0 {
+		return fmt.Errorf("user not found: %s", username)
+	}
+	return nil
 }
 
 func (u *User) ExactByUsernameAndPassword(ctx context.Context, username, passWd string) error {
