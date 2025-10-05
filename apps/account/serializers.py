@@ -168,4 +168,4 @@ class OIDCLoginRequestSerializer(serializers.Serializer):
     OIDC Login
     """
 
-    next = serializers.CharField(label=gettext_lazy("Next"))
+    next = serializers.CharField(label=gettext_lazy("Redirect To"))

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.home",
     "apps.notice",
     "apps.tcloud",
+    "ovinc_client",
     "ovinc_client.tcaptcha",
     "ovinc_client.trace",
 ]

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-14 13:29+0800\n"
+"POT-Creation-Date: 2025-10-05 20:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,6 +172,9 @@ msgstr "电话已被使用"
 
 msgid "State"
 msgstr "状态"
+
+msgid "Redirect To"
+msgstr "重定向地址"
 
 msgid "Application"
 msgstr "应用"
@@ -372,72 +375,3 @@ msgstr "认证 Token 非法"
 
 msgid "App Auth Failed"
 msgstr "应用鉴权失败"
-
-msgid "Mail Address"
-msgstr "邮件地址"
-
-msgid "Code Verify Failed"
-msgstr "代码验证失败"
-
-msgid "LIST"
-msgstr "LIST"
-
-msgid "CREATE"
-msgstr "CREATE"
-
-msgid "UPDATE"
-msgstr "UPDATE"
-
-msgid "PARTIAL_UPDATE"
-msgstr "PARTIAL_UPDATE"
-
-msgid "DESTROY"
-msgstr "DESTROY"
-
-msgid "Request Failed"
-msgstr "请求失败"
-
-msgid "Server Error"
-msgstr "服务器异常"
-
-msgid "Login Required"
-msgstr "未登录"
-
-msgid "Login Failed"
-msgstr "登录失败"
-
-msgid "Permission Denied"
-msgstr "未经授权"
-
-msgid "Operate Error"
-msgstr "异常操作"
-
-msgid "Resource Not Found"
-msgstr "资源未找到"
-
-msgid "Service Closed"
-msgstr "服务已关闭"
-
-msgid "Soft Delete"
-msgstr "软删除"
-
-msgid "Invalid Page Number"
-msgstr "页码错误"
-
-msgid "TCaptcha"
-msgstr "腾讯云验证码"
-
-msgid "Success"
-msgstr "成功"
-
-msgid "Low"
-msgstr "低"
-
-msgid "High"
-msgstr "高"
-
-msgid "TCaptcha Verify Failed"
-msgstr "验证码校验失败"
-
-msgid "App Performance"
-msgstr "应用性能"
