@@ -106,3 +106,17 @@ func (u *User) CookieSecure() bool {
 func (u *User) CookieHTTPOnly() bool {
 	return config.Config.API.CookieHTTPOnly
 }
+
+func (u *User) GetNickName() string {
+	if u.NickName.Valid {
+		return u.NickName.String
+	}
+	return ""
+}
+
+func (u *User) GetEmail() string {
+	if u.EmailAddress.Valid {
+		return u.EmailAddress.String
+	}
+	return ""
+}

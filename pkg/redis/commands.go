@@ -101,6 +101,7 @@ func Get(ctx context.Context, conn redis.Cmdable, k string) (string, error) {
 		span.SetStatus(codes.Error, err.Error())
 		return "", err
 	}
+
 	// result
 	return cmd.Val(), nil
 }
@@ -119,6 +120,22 @@ func Del(ctx context.Context, conn redis.Cmdable, keys ...string) (int64, error)
 		span.SetStatus(codes.Error, err.Error())
 		return 0, err
 	}
-	// result
+	return cmd.Val(), nil
+}
+
+func Exists(ctx context.Context, conn redis.Cmdable, keys ...string) (int64, error) {
+	// trace
+	ctx, span := trace.StartSpan(ctx, "Redis#Exists", trace.SpanKindClient)
+	defer span.End()
+
+	// add data
+	span.SetAttributes(buildAttributes(attribute.StringSlice("keys", keys))...)
+
+	// exec
+	cmd := conn.Exists(ctx, keys...)
+	if err := cmd.Err(); err != nil {
+		span.SetStatus(codes.Error, err.Error())
+		return 0, err
+	}
 	return cmd.Val(), nil
 }

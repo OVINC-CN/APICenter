@@ -36,16 +36,12 @@ func UserInfo(c *gin.Context) {
 	}
 
 	// response
-	nickName := ""
-	if user.NickName.Valid {
-		nickName = user.NickName.String
-	}
 	apiMixin.ResponseSuccess(
 		c,
 		UserInfoData{
-			UserID:    apiMixin.GetUserID(c),
-			Username:  apiMixin.GetUsername(c),
-			NickName:  nickName,
+			UserID:    user.ID,
+			Username:  user.Username,
+			NickName:  user.GetNickName(),
 			LastLogin: user.LastLogin.In(cfg.AppTimezone()).Format(time.RFC3339),
 		},
 	)
