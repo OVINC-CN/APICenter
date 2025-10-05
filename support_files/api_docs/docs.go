@@ -52,6 +52,24 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/account/sign-out": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/apiMixin.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/account/sign-up": {
             "post": {
                 "produces": [

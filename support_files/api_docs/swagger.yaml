@@ -103,6 +103,17 @@ paths:
             $ref: '#/definitions/apiMixin.ResponseModel'
       tags:
       - Account
+  /v1/account/sign-out:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiMixin.ResponseModel'
+      tags:
+      - Account
   /v1/account/sign-up:
     post:
       parameters:

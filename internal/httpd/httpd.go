@@ -36,6 +36,7 @@ func Serve() {
 		{
 			accountGroup.POST("/sign-up", accountRouters.SignUp)
 			accountGroup.POST("/sign-in", accountRouters.SignIn)
+			accountGroup.GET("/sign-out", accountRouters.SignOut)
 			accountGroup.GET("/user-info", account.LoginRequiredMiddleware(), accountRouters.UserInfo)
 		}
 	}
