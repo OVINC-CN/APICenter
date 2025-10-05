@@ -79,6 +79,9 @@ var (
 
 // Trace
 var (
+	EnableTrace = func() bool {
+		return GetConfigBool("APP_ENABLE_TRACE", true)
+	}
 	TraceEndpoint = func() string {
 		return GetConfigVal("APP_TRACE_ENDPOINT", "127.0.0.1:4317")
 	}
