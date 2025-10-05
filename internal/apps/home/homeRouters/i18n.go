@@ -12,7 +12,7 @@ type ChangeLangRequest struct {
 
 // ChangeLang godoc
 //
-//	@Tags		Account
+//	@Tags		Home
 //	@Param		request	body	ChangeLangRequest	true "request body"
 //	@Produce	json
 //	@Success	200	{object}	apiMixin.ResponseModel

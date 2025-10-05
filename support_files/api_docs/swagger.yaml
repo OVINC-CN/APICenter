@@ -160,5 +160,5 @@ paths:
           schema:
             $ref: '#/definitions/apiMixin.ResponseModel'
       tags:
-      - Account
+      - Home
 swagger: "2.0"
