@@ -15,8 +15,16 @@ func init() {
 		},
 		Cron: cronConfig{
 			WorkerConcurrency:     cfg.GetConfigInt("APP_CRON_WORKER_CONCURRENCY", 1),
-			WorkerQueues:          cfg.GetConfigStruct("APP_CRON_WORKER_QUEUES", "{}", make(map[string]int)),
+			WorkerQueues:          cfg.GetConfigStruct("APP_CRON_WORKER_QUEUES", `{"default": 1}`, make(map[string]int)),
 			WorkerShutDownTimeout: time.Duration(cfg.GetConfigInt64("APP_CRON_WORKER_SHUTDOWN_TIMEOUT", 60)) * time.Second,
+		},
+		AppAccount: appAccountConfig{
+			EmailDomain:             cfg.GetConfigVal("APP_ACCOUNT_EMAIL_DOMAIN", "example.com"),
+			AuthTokenTimeout:        cfg.GetConfigInt("APP_ACCOUNT_AUTH_TOKEN_TIMEOUT", 7*24*60*60),
+			AuthTokenCookieName:     cfg.GetConfigVal("APP_ACCOUNT_AUTH_TOKEN_COOKIE_NAME", "auth-token"),
+			AuthTokenCookieDomain:   cfg.GetConfigVal("APP_ACCOUNT_AUTH_TOKEN_COOKIE_DOMAIN", ""),
+			AuthTokenCookieSecure:   cfg.GetConfigBool("APP_ACCOUNT_AUTH_TOKEN_COOKIE_SECURE", true),
+			AuthTokenCookieHTTPOnly: cfg.GetConfigBool("APP_ACCOUNT_AUTH_TOKEN_COOKIE_HTTPONLY", true),
 		},
 	}
 }

@@ -44,11 +44,8 @@ var (
 	MySQLPassword = func() string {
 		return GetConfigVal("APP_MYSQL_PASSWORD", "")
 	}
-	MySQLHost = func() string {
-		return GetConfigVal("APP_MYSQL_HOST", "127.0.0.1")
-	}
-	MySQLPort = func() int {
-		return GetConfigInt("APP_MYSQL_PORT", 3306)
+	MySQLAddr = func() string {
+		return GetConfigVal("APP_MYSQL_ADDR", "127.0.0.1:3306")
 	}
 	MySQLDatabase = func() string {
 		return GetConfigVal("APP_MYSQL_DATABASE", "api_center")

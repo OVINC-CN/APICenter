@@ -1,0 +1,136 @@
+definitions:
+  accountRouters.SignInRequest:
+    properties:
+      password:
+        maxLength: 64
+        minLength: 64
+        type: string
+      username:
+        maxLength: 32
+        minLength: 4
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  accountRouters.SignUpRequest:
+    properties:
+      nickname:
+        maxLength: 32
+        minLength: 4
+        type: string
+      password:
+        maxLength: 64
+        minLength: 64
+        type: string
+      phone_number:
+        maxLength: 11
+        minLength: 11
+        type: string
+      username:
+        maxLength: 32
+        minLength: 4
+        type: string
+    required:
+    - password
+    - phone_number
+    - username
+    type: object
+  accountRouters.UserInfoData:
+    properties:
+      last_login:
+        type: string
+      nick_name:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
+  accountRouters.UserInfoResponse:
+    properties:
+      data:
+        $ref: '#/definitions/accountRouters.UserInfoData'
+      message:
+        type: string
+      trace_id:
+        type: string
+    type: object
+  apiMixin.ResponseModel:
+    properties:
+      data: {}
+      message:
+        type: string
+      trace_id:
+        type: string
+    type: object
+info:
+  contact:
+    email: contact@ovinc.cn
+    name: OVINC CN
+    url: https://github.com/OVINC-CN
+  license:
+    name: MIT License
+    url: https://github.com/OVINC-CN/APICenter/blob/main/LICENSE
+  title: Api Center
+  version: 2.0.0
+paths:
+  /v1/account/sign-in:
+    post:
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/accountRouters.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiMixin.ResponseModel'
+      tags:
+      - Account
+  /v1/account/sign-up:
+    post:
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/accountRouters.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiMixin.ResponseModel'
+      tags:
+      - Account
+  /v1/account/user-info:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/accountRouters.UserInfoResponse'
+      tags:
+      - Account
+  /v1/healthz:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiMixin.ResponseModel'
+      tags:
+      - Home
+swagger: "2.0"

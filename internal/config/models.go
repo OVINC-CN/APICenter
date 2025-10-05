@@ -12,7 +12,17 @@ type cronConfig struct {
 	WorkerShutDownTimeout time.Duration
 }
 
+type appAccountConfig struct {
+	EmailDomain             string
+	AuthTokenTimeout        int
+	AuthTokenCookieName     string
+	AuthTokenCookieDomain   string
+	AuthTokenCookieSecure   bool
+	AuthTokenCookieHTTPOnly bool
+}
+
 type configModel struct {
-	API  apiConfig
-	Cron cronConfig
+	API        apiConfig
+	Cron       cronConfig
+	AppAccount appAccountConfig
 }

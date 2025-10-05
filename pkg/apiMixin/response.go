@@ -1,7 +1,6 @@
 package apiMixin
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,7 @@ import (
 
 func Response(c *gin.Context, status int, msg string, data interface{}) {
 	// load context
-	ctx := c.MustGet(TraceContextKey).(context.Context)
+	ctx := GetTraceCtx(c)
 	span := trace.SpanFromContext(ctx)
 	traceID := span.SpanContext().TraceID().String()
 
@@ -24,4 +23,24 @@ func ResponseSuccess(c *gin.Context, data interface{}) {
 
 func ResponseError(c *gin.Context, error *APIError) {
 	Response(c, error.Code, error.Msg, nil)
+}
+
+func ResponseBadRequest(c *gin.Context, msg string) {
+	Response(c, http.StatusBadRequest, msg, nil)
+}
+
+func ResponseUnauthorized(c *gin.Context) {
+	Response(c, http.StatusUnauthorized, Translate(c, "apiMixin.unAuthorized", nil), nil)
+}
+
+func ResponseForbidden(c *gin.Context) {
+	Response(c, http.StatusForbidden, Translate(c, "apiMixin.noPermission", nil), nil)
+}
+
+func ResponseNotFound(c *gin.Context) {
+	Response(c, http.StatusNotFound, Translate(c, "apiMixin.notFound", nil), nil)
+}
+
+func ResponseInternalError(c *gin.Context) {
+	Response(c, http.StatusInternalServerError, Translate(c, "apiMixin.internalServerError", nil), nil)
 }

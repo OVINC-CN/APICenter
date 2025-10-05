@@ -1,37 +1,38 @@
 package mysql
 
 import (
-	"database/sql"
 	"log"
 
 	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
 	"gorm.io/gorm"
 )
 
-var db *sql.DB
+var db *gorm.DB
 
 func init() {
-	gormDB, err := openConn()
+	// open conn
+	var err error
+	db, err = openConn()
 	if err != nil {
 		log.Fatalf("[MySQL] connect to mysql failed; %s", err)
 	}
+	// debug
+	if cfg.AppDebug() {
+		db = db.Debug()
+	}
 	// try to connect
-	db, err = gormDB.DB()
-	if err != nil || db.Ping() != nil {
+	sqlDB, err := db.DB()
+	if err != nil || sqlDB.Ping() != nil {
 		log.Fatalf("[MySQL] ping mysql failed; %s", err)
 	}
 	// set config
-	db.SetMaxOpenConns(cfg.MySQLMaxOpenConns())
-	db.SetMaxIdleConns(cfg.MySQLMaxIdleConns())
-	db.SetConnMaxLifetime(cfg.MySQLConnMaxLifetime())
+	sqlDB.SetMaxOpenConns(cfg.MySQLMaxOpenConns())
+	sqlDB.SetMaxIdleConns(cfg.MySQLMaxIdleConns())
+	sqlDB.SetConnMaxLifetime(cfg.MySQLConnMaxLifetime())
 	// log
 	log.Printf("[MySQL] connect to mysql success\n")
 }
 
-func DB() *sql.DB {
+func DB() *gorm.DB {
 	return db
-}
-
-func GormDB() (*gorm.DB, error) {
-	return openConn()
 }

@@ -8,3 +8,9 @@ type APIError struct {
 func (e *APIError) Error() string {
 	return e.Msg
 }
+
+type ResponseModel struct {
+	TraceID string      `json:"trace_id"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}

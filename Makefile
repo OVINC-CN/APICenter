@@ -1,2 +1,5 @@
+swagger:
+	scripts/swagger.sh
+
 tidy:
-	go mod tidy
+	scripts/tidy.sh

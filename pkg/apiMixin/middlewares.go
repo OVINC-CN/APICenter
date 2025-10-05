@@ -27,7 +27,7 @@ func ObserveMiddleware() gin.HandlerFunc {
 		defer span.End()
 
 		// add trace to context
-		c.Set(TraceContextKey, ctx)
+		SetTraceCtx(c, ctx)
 
 		// record time
 		startTime := time.Now()

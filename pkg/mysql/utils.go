@@ -14,11 +14,10 @@ import (
 func openConn() (*gorm.DB, error) {
 	// init dsn
 	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?%s",
+		"%s:%s@tcp(%s)/%s?%s",
 		cfg.MySQLUsername(),
 		cfg.MySQLPassword(),
-		cfg.MySQLHost(),
-		cfg.MySQLPort(),
+		cfg.MySQLAddr(),
 		cfg.MySQLDatabase(),
 		cfg.MySQLParams(),
 	)
@@ -35,7 +34,7 @@ func openConn() (*gorm.DB, error) {
 		tracing.WithoutMetrics(),
 		tracing.WithAttributes(
 			attribute.String(trace.AttributeDBSystem, "mysql"),
-			attribute.String(trace.AttributeDBIP, fmt.Sprintf("%s:%d", cfg.MySQLHost(), cfg.MySQLPort())),
+			attribute.String(trace.AttributeDBIP, cfg.MySQLAddr()),
 			attribute.String(trace.AttributeDBInstance, cfg.MySQLDatabase()),
 		),
 	)); err != nil {
