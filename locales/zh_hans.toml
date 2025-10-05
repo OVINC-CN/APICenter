@@ -1,0 +1,23 @@
+[apiMixin.internalServerError]
+other = "服务器异常，请联系管理员"
+
+[apiMixin.notFound]
+other = "资源不存在"
+
+[apiMixin.noPermission]
+other = "无权限"
+
+[apiMixin.unAuthorized]
+other = "未登录"
+
+[account.usernameDuplicate]
+other = "用户名或昵称已被使用"
+
+[account.usernameInvalid]
+other = "用户名只能包含字母或数字"
+
+[account.phoneNumberDuplicate]
+other = "手机号已被使用"
+
+[account.loginFailed]
+other = "用户名或密码错误"
