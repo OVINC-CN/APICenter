@@ -61,3 +61,25 @@ func ObserveMiddleware() gin.HandlerFunc {
 		)
 	}
 }
+
+func RecoveryMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		defer func() {
+			if r := recover(); r != nil {
+				// init
+				ctx, span := trace.StartSpan(GetTraceCtx(c), "RecoveryMiddleware", trace.SpanKindInternal)
+				defer span.End()
+
+				// set error
+				span.SetStatus(codes.Error, fmt.Sprintf("%T", r))
+
+				// log
+				logger.Logger(ctx).Error(fmt.Sprintf("[RecoveryMiddleware] server panic\n%v", r))
+
+				// return 500
+				ResponseInternalError(c)
+			}
+		}()
+		c.Next()
+	}
+}

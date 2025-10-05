@@ -20,7 +20,7 @@ func Serve() {
 	r := gin.New()
 
 	// middlewares
-	r.Use(gin.Recovery(), apiMixin.ObserveMiddleware())
+	r.Use(apiMixin.RecoveryMiddleware(), apiMixin.ObserveMiddleware())
 
 	// routers
 	apiV1Group := r.Group("/v1")

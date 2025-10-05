@@ -14,7 +14,12 @@ func Response(c *gin.Context, status int, msg string, data interface{}) {
 	traceID := span.SpanContext().TraceID().String()
 
 	// response
-	c.JSON(status, gin.H{"trace_id": traceID, "message": msg, "data": data})
+	responseData := gin.H{"trace_id": traceID, "message": msg, "data": data}
+	if status >= http.StatusBadRequest {
+		c.AbortWithStatusJSON(status, responseData)
+		return
+	}
+	c.JSON(status, responseData)
 }
 
 func ResponseSuccess(c *gin.Context, data interface{}) {

@@ -33,7 +33,7 @@ func LoginRequiredMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// set user to context
+		//set user to context
 		apiMixin.SetUsername(c, user.Username)
 		apiMixin.SetUserID(c, user.ID)
 		if err := apiMixin.SetUser(c, user); err != nil {
