@@ -1,5 +1,5 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 go mod tidy

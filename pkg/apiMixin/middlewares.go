@@ -25,6 +25,11 @@ func ObserveMiddleware() gin.HandlerFunc {
 		// init trace
 		ctx, span := trace.StartSpan(context.Background(), fmt.Sprintf("Router#%s#%s", c.Request.Method, path), trace.SpanKindServer)
 		defer span.End()
+		span.SetAttributes(
+			attribute.String(trace.AttributeRequestURI, c.Request.RequestURI),
+			attribute.String(trace.AttributeRequestRemoteAddr, c.Request.RemoteAddr),
+			attribute.Int64(trace.AttributeRequestContentLength, c.Request.ContentLength),
+		)
 
 		// add trace to context
 		SetTraceCtx(c, ctx)
