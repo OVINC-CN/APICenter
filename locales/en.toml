@@ -1,0 +1,23 @@
+[apiMixin.internalServerError]
+other = "internal server error"
+
+[apiMixin.notFound]
+other = "resource not found"
+
+[apiMixin.noPermission]
+other = "no permission"
+
+[apiMixin.unAuthorized]
+other = "unauthorized"
+
+[account.usernameDuplicate]
+other = "username already exists"
+
+[account.usernameInvalid]
+other = "username can only contain letters, numbers"
+
+[account.phoneNumberDuplicate]
+other = "phone number already exists"
+
+[account.loginFailed]
+other = "login failed, please check your username and password"

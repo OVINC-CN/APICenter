@@ -116,6 +116,35 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/language": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "parameters": [
+                    {
+                        "description": "request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/homeRouters.ChangeLangRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/apiMixin.ResponseModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -208,6 +237,21 @@ const docTemplate = `{
                 },
                 "trace_id": {
                     "type": "string"
+                }
+            }
+        },
+        "homeRouters.ChangeLangRequest": {
+            "type": "object",
+            "required": [
+                "lang"
+            ],
+            "properties": {
+                "lang": {
+                    "type": "string",
+                    "enum": [
+                        "zh-Hans",
+                        "en"
+                    ]
                 }
             }
         }

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/ovinc-cn/apicenter/v2/internal/apps/account"
 	"github.com/ovinc-cn/apicenter/v2/internal/apps/account/accountRouters"
-	"github.com/ovinc-cn/apicenter/v2/internal/apps/home"
+	"github.com/ovinc-cn/apicenter/v2/internal/apps/home/homeRouters"
 	"github.com/ovinc-cn/apicenter/v2/internal/config"
 	"github.com/ovinc-cn/apicenter/v2/pkg/apiMixin"
 	"github.com/ovinc-cn/apicenter/v2/pkg/cfg"
@@ -28,7 +28,8 @@ func Serve() {
 		// home
 		homeGroup := apiV1Group.Group("")
 		{
-			homeGroup.GET("/healthz", home.HealthZ)
+			homeGroup.GET("/healthz", homeRouters.HealthZ)
+			homeGroup.PUT("/language", homeRouters.ChangeLang)
 		}
 		// account
 		accountGroup := apiV1Group.Group("/account")

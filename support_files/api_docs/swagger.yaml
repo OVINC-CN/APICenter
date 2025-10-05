@@ -64,6 +64,16 @@ definitions:
       trace_id:
         type: string
     type: object
+  homeRouters.ChangeLangRequest:
+    properties:
+      lang:
+        enum:
+        - zh-Hans
+        - en
+        type: string
+    required:
+    - lang
+    type: object
 info:
   contact:
     email: contact@ovinc.cn
@@ -133,4 +143,22 @@ paths:
             $ref: '#/definitions/apiMixin.ResponseModel'
       tags:
       - Home
+  /v1/language:
+    put:
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/homeRouters.ChangeLangRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/apiMixin.ResponseModel'
+      tags:
+      - Account
 swagger: "2.0"

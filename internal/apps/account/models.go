@@ -90,13 +90,13 @@ func (u *User) CookieName() string {
 }
 
 func (u *User) CookieDomain() string {
-	return config.Config.AppAccount.AuthTokenCookieDomain
+	return config.Config.API.CookieDomain
 }
 
 func (u *User) CookieSecure() bool {
-	return config.Config.AppAccount.AuthTokenCookieSecure
+	return config.Config.API.CookieSecure
 }
 
 func (u *User) CookieHTTPOnly() bool {
-	return config.Config.AppAccount.AuthTokenCookieHTTPOnly
+	return config.Config.API.CookieHTTPOnly
 }

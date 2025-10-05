@@ -3,7 +3,10 @@ package config
 import "time"
 
 type apiConfig struct {
-	Addr string
+	Addr           string
+	CookieDomain   string
+	CookieSecure   bool
+	CookieHTTPOnly bool
 }
 
 type cronConfig struct {
@@ -13,12 +16,9 @@ type cronConfig struct {
 }
 
 type appAccountConfig struct {
-	EmailDomain             string
-	AuthTokenTimeout        int
-	AuthTokenCookieName     string
-	AuthTokenCookieDomain   string
-	AuthTokenCookieSecure   bool
-	AuthTokenCookieHTTPOnly bool
+	EmailDomain         string
+	AuthTokenTimeout    int
+	AuthTokenCookieName string
 }
 
 type configModel struct {

@@ -6,4 +6,5 @@ const (
 	UserIDContextKey   = "user_id"
 	UserContextKey     = "user"
 	I18nLangCookieKey  = "language"
+	I18nLangCookieTTL  = 3600 * 24 * 365
 )
