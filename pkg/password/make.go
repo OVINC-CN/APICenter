@@ -2,10 +2,11 @@ package password
 
 import (
 	"crypto/sha256"
+	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"hash"
-	"math/rand"
+	"math/big"
 
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -54,9 +55,14 @@ func makePbkdf2(password string, keyLen int, h func() hash.Hash) (string, error)
 
 func getRandomSalt(size int) []byte {
 	salt := make([]byte, size)
-	l := len(allowedChars)
+	l := int64(len(allowedChars))
 	for i := range salt {
-		salt[i] = allowedChars[rand.Intn(l)]
+		nBig, err := rand.Int(rand.Reader, big.NewInt(l))
+		if err != nil {
+			// If we can't generate randomness, fail securely.
+			panic(fmt.Sprintf("failed to generate cryptographically secure salt: %v", err))
+		}
+		salt[i] = allowedChars[nBig.Int64()]
 	}
 	return salt
 }
