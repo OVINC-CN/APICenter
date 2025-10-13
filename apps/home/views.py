@@ -1,15 +1,23 @@
 from django.conf import settings
 from django.conf.global_settings import LANGUAGE_COOKIE_NAME
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
+from django.db import connection
 from django.db.models import Q
+from django_redis.cache import RedisCache
 from ovinc_client.core.auth import SessionAuthenticate
+from ovinc_client.core.logger import logger
 from ovinc_client.core.viewsets import MainViewSet
+from redis import ConnectionError as RedisConnectionError
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.account.models import User
 from apps.home.models import MetaConfig
 from apps.home.serializers import I18nRequestSerializer, MetaConfigQuerySerializer
 
+cache: RedisCache
 USER_MODEL: User = get_user_model()
 
 
@@ -20,6 +28,7 @@ class HomeView(MainViewSet):
 
     queryset = USER_MODEL.get_queryset()
     authentication_classes = [SessionAuthenticate]
+    enable_record_log = False
 
     def list(self, request, *args, **kwargs):
         msg = f"[{request.method}] Connect Success"
@@ -29,6 +38,34 @@ class HomeView(MainViewSet):
                 "user": request.user.username,
             }
         )
+
+
+class HealthViewSet(MainViewSet):
+    """
+    Health Check
+    """
+
+    authentication_classes = []
+    enable_record_log = False
+
+    @action(methods=["GET"], detail=False)
+    def health(self, request, *args, **kwargs):
+        # database ping
+        try:
+            connection.ensure_connection()
+        except Exception as err:  # pylint: disable=broad-except
+            logger.exception("[Healthy] database connection error: %s", err)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data="database connection error")
+        # redis ping
+        try:
+            result = cache.client.get_client().ping()
+            if not result:
+                raise RedisConnectionError("redis ping failed")
+        except Exception as err:  # pylint: disable=broad-except
+            logger.exception("[Healthy] redis connection error: %s", err)
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR, data="redis connection error")
+        # success
+        return Response()
 
 
 class I18nViewSet(MainViewSet):

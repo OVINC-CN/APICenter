@@ -135,7 +135,7 @@ class UserSignViewSet(MainViewSet):
             password=request_data["password"],
             nick_name=request_data["nick_name"],
             phone_number=request_data["phone_number"],
-            email_address=f"{request_data["username"]}@{urlparse(settings.BACKEND_URL).hostname}",
+            email_address=f"{request_data['username']}@{urlparse(settings.BACKEND_URL).hostname}",
         )
 
         # bind wechat
