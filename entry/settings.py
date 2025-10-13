@@ -57,6 +57,7 @@ INSTALLED_APPS = [
 ]
 
 # MIDDLEWARE
+# pylint: disable=C0103
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "ovinc_client.core.middlewares.CSRFExemptMiddleware",
