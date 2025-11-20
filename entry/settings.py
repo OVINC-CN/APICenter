@@ -17,6 +17,7 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # DEBUG
 DEBUG = strtobool(os.getenv("DEBUG", "False"))
+APPEND_SLASH = strtobool(os.getenv("APPEND_SLASH", "False"))
 
 # APP_CODE & SECRET
 APP_CODE = getenv_or_raise("APP_CODE")
