@@ -213,7 +213,7 @@ class UserToken(models.Model):
         verbose_name = gettext_lazy("User Token")
         verbose_name_plural = verbose_name
         ordering = ["-id"]
-        index_together = [
-            ["user", "expired_at"],
-            ["user", "session_key", "expired_at"],
+        indexes = [
+            models.Index(fields=["user", "expired_at"]),
+            models.Index(fields=["user", "session_key", "expired_at"]),
         ]
